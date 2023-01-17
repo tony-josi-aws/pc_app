@@ -14,14 +14,15 @@ class App_InstantRespCommandApp(App_IOBase):
         super(App_InstantRespCommandApp, self).__init__(comm_manager)
 
 
-    def send_command_recv_resp(self, command):
+    def send_command_recv_resp(self, command, command_type = app_utils.COMMAND_TYPE_REQUEST):
 
         command_id = app_utils.INSTANT_RESP_CMND_ID #app_utils.get_command_id(command)
-        #print("*******************COMM ID: {}".format(command_id))
-        logger.info(command_id)
+        encoded_command = app_utils.encode_packet(command, command_type)
+
+        logger.info(f"Sending command with ID: {command_id}, encoded data: {encoded_command}")
         queue = self._get_queue(command_id)
         self._comm_manager.subscribe(command_id, self.default_callback)
-        self._comm_manager.write_interface_tx(command)
+        self._comm_manager.write_interface_tx(encoded_command)
         response_byte = ""
         response_byte = self._get_queue_data(queue)
         if response_byte == "":

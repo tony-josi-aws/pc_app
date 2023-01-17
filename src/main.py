@@ -24,14 +24,11 @@ class CLI:
 
 if __name__ == "__main__":
 
-    for i in data:
-        print(i)
-
     """ Init CLI """
     cli = CLI('127.0.0.1', 20001)
 
     """ Send commands """
-    print(cli.instant_cmnd.send_command_recv_resp(app_utils.encode_packet("ABCD", app_utils.COMMAND_TYPE_REQUEST)))
+    print(cli.instant_cmnd.send_command_recv_resp("ABCD"))
     
     """ Exit """
     cli.cli_close()
