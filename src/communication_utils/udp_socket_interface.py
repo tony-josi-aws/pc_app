@@ -25,7 +25,7 @@ class UDPSocket_CommInterface:
             #print(rx_data)
             return rx_data[0]
         except Exception as e:
-            #udp_sock_logger.critical(f"UDP get_rx failed : {e}.", exc_info=True)
+            udp_sock_logger.info(f"UDP get_rx failed : {e}.", exc_info=True)
             pass
 
 

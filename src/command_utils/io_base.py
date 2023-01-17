@@ -34,7 +34,7 @@ class App_IOBase():
 
     def default_callback(self, data, comm_id):
         if data != None:
-            self._get_queue(comm_id).put(data.decode())
+            self._get_queue(comm_id).put(data.decode(encoding = "ascii"))
 
     def set_timeout(self, timeout_value: float):
         self._timeout = timeout_value

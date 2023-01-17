@@ -27,7 +27,7 @@ if __name__ == "__main__":
     cli = CLI('127.0.0.1', 20001)
 
     """ Send commands """
-    print(cli.instant_cmnd.send_command_recv_resp(("Hello world").encode()))
+    print(cli.instant_cmnd.send_command_recv_resp(("Hello world").encode(encoding = "ascii")))
     
     """ Exit """
     cli.cli_close()

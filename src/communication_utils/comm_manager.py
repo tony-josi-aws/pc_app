@@ -33,7 +33,7 @@ class CommManager:
         """
 
         """ Small delay to wait till the socket get created """
-        time.sleep(0.5) 
+        time.sleep(0.1) 
         #self.interface_handle.set_timeout(self._timeout)
         while True:
             try:
