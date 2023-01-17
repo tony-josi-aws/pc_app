@@ -4,6 +4,7 @@ import logging
 from logging import handlers
 pc_app_logger = logging.getLogger(__name__)
 
+from utils import app_utils
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 from command_utils.instant_resp_commands import App_InstantRespCommandApp
 
@@ -23,11 +24,14 @@ class CLI:
 
 if __name__ == "__main__":
 
+    for i in data:
+        print(i)
+
     """ Init CLI """
     cli = CLI('127.0.0.1', 20001)
 
     """ Send commands """
-    print(cli.instant_cmnd.send_command_recv_resp(("Hello world").encode(encoding = "ascii")))
+    print(cli.instant_cmnd.send_command_recv_resp(app_utils.encode_packet("ABCD", app_utils.COMMAND_TYPE_REQUEST)))
     
     """ Exit """
     cli.cli_close()
