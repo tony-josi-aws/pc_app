@@ -5,10 +5,14 @@ PC app to communicate with the device.
 
 Create: `python -m venv <project_name>`
 
-Activate: `Activate venv: <project_name>/Scripts/activate.bat`
+Activate: 
+
+* Windows: `<project_name>/Scripts/activate.bat`
+* Linux:   `source <venv>/bin/activate`
 
 Install required python modules from `requirements.txt`: `pip install -r requirements.txt`
 
 Run: `python src\main.py`
 
+Deactivate venv: `deactivate`
 
