@@ -19,6 +19,7 @@ class CommManager:
         """
         self.rx_queue = Queue()
         self.callback_list = {}
+        self._timeout = 0.25
         self.lock = threading.Lock()
         self.command_logging = None
         self.interface_handle = interface_handle
@@ -32,7 +33,8 @@ class CommManager:
         """
 
         """ Small delay to wait till the socket get created """
-        time.sleep(0.1) 
+        time.sleep(0.5) 
+        #self.interface_handle.set_timeout(self._timeout)
         while True:
             try:
                 if self._kill_threads.isSet():
@@ -108,4 +110,4 @@ class CommManager:
         """
         self._kill_threads.set()
         # # to free up queue.get() lock in process_queue add -1 to queue
-        # self.rx_queue.put(-1)
+        self.rx_queue.put(-1)

@@ -8,7 +8,7 @@ from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 from command_utils.instant_resp_commands import App_InstantRespCommandApp
 
 def time_out_callback(comnd):
-    print("RX response timeout for the command: {}".format(comnd))
+    pass
 
 class CLI:
 
@@ -17,8 +17,19 @@ class CLI:
         self.instant_cmnd = App_InstantRespCommandApp(self.comm_interface)
         self.instant_cmnd.set_timeout_callback(time_out_callback)
 
+    def cli_close(self):
+        self.instant_cmnd._comm_manager.close()
+        self.comm_interface.close_interface()
 
 if __name__ == "__main__":
 
+    """ Init CLI """
     cli = CLI('127.0.0.1', 20001)
+
+    """ Send commands """
     print(cli.instant_cmnd.send_command_recv_resp(("Hello world").encode()))
+    
+    """ Exit """
+    cli.cli_close()
+
+    

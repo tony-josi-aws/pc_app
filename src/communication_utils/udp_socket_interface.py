@@ -25,7 +25,8 @@ class UDPSocket_CommInterface:
             #print(rx_data)
             return rx_data[0]
         except Exception as e:
-            udp_sock_logger.critical(f"UDP get_rx failed : {e}.", exc_info=True)
+            #udp_sock_logger.critical(f"UDP get_rx failed : {e}.", exc_info=True)
+            pass
 
 
     def send_data_bytes(self, data_bytes):
@@ -33,4 +34,10 @@ class UDPSocket_CommInterface:
             self.udp_socket.sendto(data_bytes, (self.target_ip, self.target_port))      
         except Exception as e:
             udp_sock_logger.critical(f"UDP send_data_bytes failed : {e}.", exc_info=True)
+
+    def set_timeout(self, timeout):
+        self.udp_socket.settimeout(timeout)
+
+    def close_interface(self):
+        self.udp_socket.close()
           
