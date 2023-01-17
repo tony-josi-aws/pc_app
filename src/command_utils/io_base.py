@@ -11,7 +11,7 @@ class App_IOBase():
         self._comm_manager = CommManager(comm_manager)
         self._comm_manager.start_receive_and_process_threads()
         self._command_queues = {}
-        self._timeout = 0.5
+        self._timeout = 1.0
         self.timeout_callback = None
     
     def set_timeout_callback(self, call_back):
@@ -33,8 +33,8 @@ class App_IOBase():
         return response_data
 
     def default_callback(self, data, comm_id):
-
-        self._get_queue(comm_id).put(data)
+        if data != None:
+            self._get_queue(comm_id).put(data.decode())
 
     def set_timeout(self, timeout_value: float):
         self._timeout = timeout_value

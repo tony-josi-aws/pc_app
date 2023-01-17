@@ -3,6 +3,7 @@ import logging
 
 util_lib_logger = logging.getLogger(__name__)
 
+INSTANT_RESP_CMND_ID = 0xDE
 
 def get_command_id(commnd_data):
 
@@ -11,4 +12,3 @@ def get_command_id(commnd_data):
     else:
         return 0xFF
 
-        

@@ -13,9 +13,10 @@ class App_InstantRespCommandApp(App_IOBase):
     def __init__(self, comm_manager):
         super(App_InstantRespCommandApp, self).__init__(comm_manager)
 
+
     def send_command_recv_resp(self, command):
 
-        command_id = app_utils.get_command_id(command)
+        command_id = app_utils.INSTANT_RESP_CMND_ID #app_utils.get_command_id(command)
         #print("*******************COMM ID: {}".format(command_id))
         logger.info(command_id)
         queue = self._get_queue(command_id)

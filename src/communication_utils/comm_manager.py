@@ -54,8 +54,9 @@ class CommManager:
 
                 rx_data = self.rx_queue.get()
                 #print("++++++++++++ {}".format(rx_data))
-                rx_data_id =  app_utils.get_command_id(rx_data)
-                rx_data = rx_data.decode()
+                rx_data_id = app_utils.INSTANT_RESP_CMND_ID #app_utils.get_command_id(rx_data)
+
+                #rx_data = rx_data.decode()
 
                 if self._kill_threads.isSet():
                     break
