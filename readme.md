@@ -1,6 +1,7 @@
 ## PC App
 
-#### Using virtual enviorment (venv)
+PC app to communicate with the device.
+### Using virtual enviorment (venv)
 
 Create: `python -m venv <project_name>`
 
