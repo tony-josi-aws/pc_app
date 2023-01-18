@@ -30,7 +30,7 @@ def encode_packet(command_data, cmnd_type):
 
     data_bytes[0] = 0x55
 
-    data_bytes[1] = 0 if cmnd_type == COMMAND_TYPE_REQUEST else 1
+    data_bytes[1] = 1
 
     data_bytes[2] = command_len >> 8
     data_bytes[3] = command_len & 0xFF
