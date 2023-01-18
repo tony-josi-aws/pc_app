@@ -22,7 +22,6 @@ class UDPSocket_CommInterface:
     def get_rx(self, bytes_to_receive = 1024):
         try:
             rx_data = self.udp_socket.recvfrom(bytes_to_receive)
-            #print(rx_data)
             return rx_data[0]
         except Exception as e:
             udp_sock_logger.info(f"UDP get_rx failed : {e}.", exc_info=True)

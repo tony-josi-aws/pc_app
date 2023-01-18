@@ -56,7 +56,6 @@ class CommManager:
                 
 
                 rx_data = self.rx_queue.get()
-                #print("++++++++++++ {}".format(rx_data))
                 rx_data_id = app_utils.INSTANT_RESP_CMND_ID #app_utils.get_command_id(rx_data)
 
                 #rx_data = rx_data.decode()
@@ -67,7 +66,7 @@ class CommManager:
                 """ Do callbacks """
                 callback = self.callback_list.get(rx_data_id, [])
                 if callback:
-                    #print("=================== callback found")
+
                     callback(rx_data, rx_data_id)
                 else:
                     pass

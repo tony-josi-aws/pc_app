@@ -34,7 +34,7 @@ class App_IOBase():
 
     def default_callback(self, data, comm_id):
         if data != None:
-            #print(data)
+
             self._get_queue(comm_id).put(data)
 
     def set_timeout(self, timeout_value: float):

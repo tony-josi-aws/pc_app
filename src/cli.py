@@ -47,8 +47,6 @@ class UI_Cli(Cmd):
 
     def do_send(self, cmnd):
         rx_data = self.instant_cmnd.send_command_recv_resp(cmnd, write_to_file = True)
-        # cmnd_type, cmnd_data = app_utils.decode_packet(rx_data)
-        # print("RX Type: {}".format(cmnd_type))
         try: 
             str_resp = rx_data.decode(encoding = 'ascii')
             print("RX Msg: {}".format(str_resp))

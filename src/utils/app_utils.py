@@ -41,16 +41,12 @@ def encode_packet(command_data):
 
 def decode_packet(command_bytes):
 
-    #for i in command_bytes:
-        #print(i)
-
     if (len(command_bytes) < PACKET_HEADER_SIZE):
         return None, None
 
     command_type = COMMAND_TYPE_REQUEST if command_bytes[1] == COMMAND_TYPE_REQUEST else COMMAND_TYPE_RESPONSE
 
     data_len = command_bytes[2]
-    #print(command_bytes[3])
     data_len = (data_len << 8) | command_bytes[3]
     resp_data = bytearray(data_len)
 
