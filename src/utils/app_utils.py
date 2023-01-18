@@ -40,3 +40,19 @@ def encode_packet(command_data, cmnd_type):
 
     return data_bytes
 
+def decode_packet(command_bytes):
+
+    #for i in command_bytes:
+        #print(i)
+
+    command_type = COMMAND_TYPE_REQUEST if command_bytes[1] == COMMAND_TYPE_REQUEST else COMMAND_TYPE_RESPONSE
+
+    data_len = command_bytes[2] 
+    #print(command_bytes[3])
+    data_len = (data_len << 8) | command_bytes[3]
+    resp_data = bytearray(data_len)
+
+    if (len(command_bytes) >= data_len + PACKET_HEADER_SIZE):
+        resp_data = command_bytes[PACKET_HEADER_SIZE - 1 : + PACKET_HEADER_SIZE + data_len - 1].decode(encoding = 'ascii')
+
+    return command_type, resp_data

@@ -1,5 +1,6 @@
 
 import sys
+import time
 import logging
 from logging import handlers
 pc_app_logger = logging.getLogger(__name__)
@@ -24,13 +25,20 @@ class CLI:
 
 if __name__ == "__main__":
 
-    """ Init CLI """
-    cli = CLI('127.0.0.1', 20001)
+    # """ Init CLI """
+    # cli = CLI('127.0.0.1', 20001)
 
-    """ Send commands """
-    print(cli.instant_cmnd.send_command_recv_resp("ABCD"))
+    # for i in range(10):
+    #     """ Send commands """
+    #     print(cli.instant_cmnd.send_command_recv_resp("ABCD"))
+    #     time.sleep(1)
     
-    """ Exit """
-    cli.cli_close()
+    # """ Exit """
+    # cli.cli_close()
 
+    bytes_data = app_utils.encode_packet("ABCD", 0)
+    print(bytes_data)
+
+    cmnd_type, to_str = app_utils.decode_packet(bytes_data)
+    print(cmnd_type, to_str)
     

@@ -41,7 +41,8 @@ class CommManager:
                     break
                 """ Blocking call """
                 data_bytes = self.interface_handle.get_rx()
-                self.rx_queue.put(data_bytes)
+                if data_bytes != None:
+                    self.rx_queue.put(data_bytes)
             except Exception as e:
                 comm_manager_logger.critical(f"read_interface_rx thread failed : {e}.", exc_info=True)
                 break    
@@ -69,7 +70,8 @@ class CommManager:
                     #print("=================== callback found")
                     callback(rx_data, rx_data_id)
                 else:
-                    comm_manager_logger.warning(f"Received an unexpected packet {rx_data} with packet ID {rx_data_id}")
+                    pass
+                    #comm_manager_logger.warning(f"Received an unexpected packet {rx_data} with packet ID {rx_data_id}")
             except Exception as e:
                 comm_manager_logger.critical(f"Process_queue thread failed : {e}.", exc_info=True)
                 # TODO: break or move on? 
