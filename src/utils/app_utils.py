@@ -27,16 +27,15 @@ def encode_packet(command_data, cmnd_type):
     command_len = len(command_data)
     total_len = command_len + PACKET_HEADER_SIZE
     data_bytes = bytearray(total_len)
-    
+
     data_bytes[0] = 0x55
-    data_bytes[total_len - 1] = 0xAA
 
     data_bytes[1] = 0 if cmnd_type == COMMAND_TYPE_REQUEST else 1
 
     data_bytes[2] = command_len >> 8
     data_bytes[3] = command_len & 0xFF
 
-    data_bytes[4:total_len - 1] = bytearray(command_data)
+    data_bytes[4:] = bytearray(command_data)
 
     return data_bytes
 
@@ -50,7 +49,7 @@ def decode_packet(command_bytes):
 
     command_type = COMMAND_TYPE_REQUEST if command_bytes[1] == COMMAND_TYPE_REQUEST else COMMAND_TYPE_RESPONSE
 
-    data_len = command_bytes[2] 
+    data_len = command_bytes[2]
     #print(command_bytes[3])
     data_len = (data_len << 8) | command_bytes[3]
     resp_data = bytearray(data_len)
@@ -68,7 +67,7 @@ def decode_header_packet(header_bytes):
     if header_bytes[0] != 0x55:
         """ malformed packet """
         return []
-    
+
     seq_num = header_bytes[1]
     data_len = (header_bytes[2] << 8) | (header_bytes[3] & 0xFF)
 
