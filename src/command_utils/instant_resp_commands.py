@@ -1,5 +1,6 @@
 
 import time
+import random
 import logging
 from datetime import datetime
 
@@ -26,6 +27,14 @@ class App_InstantRespCommandApp(App_IOBase):
 
         response_info = bytearray()
 
+        if write_to_file:
+            file_name = str(hex(random.getrandbits(64)))
+            file_name = file_name[2:]
+            file_name += ".bin"
+            print("Command: {}, writing response to file: {}".format(command, file_name))
+
+        resp_status = True
+
         while True:       
 
             header_data = ""
@@ -36,7 +45,8 @@ class App_InstantRespCommandApp(App_IOBase):
 
             header_info = app_utils.decode_header_packet(header_data)
             if (len(header_info) < 2):
-                return None
+                resp_status = False
+                break
 
             if header_info[1] == 0:
                 break
@@ -52,10 +62,14 @@ class App_InstantRespCommandApp(App_IOBase):
             if response_info_temp != None:
                 response_info += response_info_temp
 
-        if write_to_file and response_info != "":
-            with open('file2.bin', 'wb') as f:
-                f.write(response_info)
+        if write_to_file:
+            if len(response_info) > 0:
+                with open(file_name, 'wb') as f:
+                    f.write(response_info)
+            else:
+                print("Write to file {} failed".format(file_name))
+            return [resp_status, None]
 
         logger.debug(f"RX response :: {command} : {response_info}")
-        return response_info
+        return [resp_status, response_info]
 

@@ -46,12 +46,16 @@ class UI_Cli(Cmd):
             return True
 
     def do_send(self, cmnd):
-        rx_data = self.instant_cmnd.send_command_recv_resp(cmnd, write_to_file = True)
+        if cmnd.lower() == "pcap":
+            rx_data = self.instant_cmnd.send_command_recv_resp(cmnd, write_to_file = True)
+        else:
+            rx_data = self.instant_cmnd.send_command_recv_resp(cmnd)
+        
         try: 
-            str_resp = rx_data.decode(encoding = 'ascii')
+            str_resp = rx_data[1].decode(encoding = 'ascii')
             print("RX Msg: {}".format(str_resp))
         except:
-            print("RX Msg: {}".format(rx_data))
+            print("RX Msg: {}".format(rx_data[1]))
 
 if __name__ == "__main__":
 
