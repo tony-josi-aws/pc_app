@@ -30,18 +30,19 @@ class UI_Cli(Cmd):
             self.instant_cmnd = App_InstantRespCommandApp(self.comm_interface)
             self.instant_cmnd.set_timeout_callback(time_out_callback)
         else:
-            self.do_close_connection()
+            self.do_close_connection("")
             self.do_connect(target_ip, target_port)
 
-    def do_close_connection(self):
-        self.instant_cmnd._comm_manager.close()
-        self.comm_interface.close_interface()
-        self.comm_interface = None
-        self.instant_cmnd = None
+    def do_close_connection(self, cmnd):
+        if self.instant_cmnd != None:
+            self.instant_cmnd._comm_manager.close()
+            self.comm_interface.close_interface()
+            self.comm_interface = None
+            self.instant_cmnd = None
 
     def do_exit(self, inp):
             print("Exciting CLI...")
-            self.do_close_connection()
+            self.do_close_connection("")
             return True
 
     def do_send(self, cmnd):
