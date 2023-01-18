@@ -16,7 +16,7 @@ def get_command_id(commnd_data):
     else:
         return 0xFF
 
-def encode_packet(command_data, cmnd_type):
+def encode_packet(command_data):
 
     try:
         command_data = command_data.encode('ascii')
@@ -79,6 +79,6 @@ def decode_data_packet(command_bytes, exp_length, reqd_encoding = 'ascii'):
         return None
 
     resp_data = bytearray(exp_length)
-    resp_data = command_bytes.decode(encoding = reqd_encoding)
+    resp_data = command_bytes
 
     return resp_data

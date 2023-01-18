@@ -14,17 +14,17 @@ class App_InstantRespCommandApp(App_IOBase):
         super(App_InstantRespCommandApp, self).__init__(comm_manager)
 
 
-    def send_command_recv_resp(self, command, command_type = app_utils.COMMAND_TYPE_REQUEST):
+    def send_command_recv_resp(self, command, write_to_file = False):
 
         command_id = app_utils.INSTANT_RESP_CMND_ID #app_utils.get_command_id(command)
-        encoded_command = app_utils.encode_packet(command, command_type)
+        encoded_command = app_utils.encode_packet(command)
 
         logger.info(f"Sending command with ID: {command_id}, encoded data: {encoded_command}")
         queue = self._get_queue(command_id)
         self._comm_manager.subscribe(command_id, self.default_callback)
         self._comm_manager.write_interface_tx(encoded_command)
 
-        response_info = ""
+        response_info = bytearray()
 
         while True:       
 
@@ -53,6 +53,9 @@ class App_InstantRespCommandApp(App_IOBase):
             if response_info_temp != None:
                 response_info += response_info_temp
 
+        if write_to_file and response_info != "":
+            with open('file2.bin', 'wb') as f:
+                f.write(response_info)
 
         logger.debug(f"RX response :: {command} : {response_info}")
         return response_info

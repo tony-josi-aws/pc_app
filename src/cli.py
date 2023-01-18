@@ -46,10 +46,14 @@ class UI_Cli(Cmd):
             return True
 
     def do_send(self, cmnd):
-        rx_data = self.instant_cmnd.send_command_recv_resp(cmnd)
+        rx_data = self.instant_cmnd.send_command_recv_resp(cmnd, write_to_file = True)
         # cmnd_type, cmnd_data = app_utils.decode_packet(rx_data)
         # print("RX Type: {}".format(cmnd_type))
-        print("RX Msg: {}".format(rx_data))
+        try: 
+            str_resp = rx_data.decode(encoding = 'ascii')
+            print("RX Msg: {}".format(str_resp))
+        except:
+            print("RX Msg: {}".format(rx_data))
 
 if __name__ == "__main__":
 
