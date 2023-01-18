@@ -47,9 +47,11 @@ class App_InstantRespCommandApp(App_IOBase):
                 logger.error("RX response data timeout for {}".format(command))
                 self.timeout_callback(command)
 
-            response_info_temp = app_utils.decode_data_packet(response_bytes)
+            response_info_temp = app_utils.decode_data_packet(response_bytes, header_info[1])
             print(response_info_temp)
-            response_info += response_info_temp
+    
+            if response_info_temp != None:
+                response_info += response_info_temp
 
 
         logger.debug(f"RX response :: {command} : {response_info}")

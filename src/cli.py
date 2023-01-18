@@ -30,7 +30,7 @@ class UI_Cli(Cmd):
             self.instant_cmnd = App_InstantRespCommandApp(self.comm_interface)
             self.instant_cmnd.set_timeout_callback(time_out_callback)
         else:
-            self.do_close()
+            self.do_close_connection()
             self.do_connect(target_ip, target_port)
 
     def do_close_connection(self):
@@ -46,9 +46,9 @@ class UI_Cli(Cmd):
 
     def do_send(self, cmnd):
         rx_data = self.instant_cmnd.send_command_recv_resp(cmnd)
-        cmnd_type, cmnd_data = app_utils.decode_packet(rx_data)
-        print("RX Type: {}".format(cmnd_type))
-        print("RX Msg: {}".format(cmnd_data))
+        # cmnd_type, cmnd_data = app_utils.decode_packet(rx_data)
+        # print("RX Type: {}".format(cmnd_type))
+        print("RX Msg: {}".format(rx_data))
 
 if __name__ == "__main__":
 

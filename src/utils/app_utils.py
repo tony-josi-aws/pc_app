@@ -4,7 +4,7 @@ import logging
 util_lib_logger = logging.getLogger(__name__)
 
 INSTANT_RESP_CMND_ID    = 0xDE
-PACKET_HEADER_SIZE      = 5
+PACKET_HEADER_SIZE      = 4
 
 COMMAND_TYPE_REQUEST    = 0x00
 COMMAND_TYPE_RESPONSE   = 0x01
@@ -70,7 +70,7 @@ def decode_header_packet(header_bytes):
         return []
     
     seq_num = header_bytes[1]
-    data_len = (header_bytes[2] << 8) | (header_bytes[3] 0xFF)
+    data_len = (header_bytes[2] << 8) | (header_bytes[3] & 0xFF)
 
     return [seq_num, data_len]
 
