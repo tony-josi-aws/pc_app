@@ -45,6 +45,9 @@ def decode_packet(command_bytes):
     #for i in command_bytes:
         #print(i)
 
+    if (len(command_bytes) < PACKET_HEADER_SIZE):
+        return None, None
+
     command_type = COMMAND_TYPE_REQUEST if command_bytes[1] == COMMAND_TYPE_REQUEST else COMMAND_TYPE_RESPONSE
 
     data_len = command_bytes[2] 

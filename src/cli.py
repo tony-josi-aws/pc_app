@@ -46,7 +46,6 @@ class UI_Cli(Cmd):
 
     def do_send(self, cmnd):
         rx_data = self.instant_cmnd.send_command_recv_resp(cmnd)
-        print(rx_data)
         cmnd_type, cmnd_data = app_utils.decode_packet(rx_data)
         print("RX Type: {}".format(cmnd_type))
         print("RX Msg: {}".format(cmnd_data))
