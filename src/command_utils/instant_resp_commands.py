@@ -23,10 +23,35 @@ class App_InstantRespCommandApp(App_IOBase):
         queue = self._get_queue(command_id)
         self._comm_manager.subscribe(command_id, self.default_callback)
         self._comm_manager.write_interface_tx(encoded_command)
-        response_byte = ""
-        response_byte = self._get_queue_data(queue)
-        if response_byte == "":
-            logger.error("RX response timeout for {}".format(command))
-            self.timeout_callback(command)
-        logger.debug(f"RX response :: {command} : {response_byte}")
-        return response_byte
+
+        response_info = ""
+
+        while True:       
+
+            header_data = ""
+            header_data = self._get_queue_data(queue)
+            if header_data == "":
+                logger.error("RX response header timeout for {}".format(command))
+                self.timeout_callback(command)
+
+            header_info = app_utils.decode_header_packet(header_data)
+            if (len(header_info) < 2):
+                return None
+
+            if header_info[1] == 0:
+                break
+
+            response_bytes = ""
+            response_bytes = self._get_queue_data(queue)
+            if response_bytes == "":
+                logger.error("RX response data timeout for {}".format(command))
+                self.timeout_callback(command)
+
+            response_info_temp = app_utils.decode_data_packet(response_bytes)
+            print(response_info_temp)
+            response_info += response_info_temp
+
+
+        logger.debug(f"RX response :: {command} : {response_info}")
+        return response_info
+

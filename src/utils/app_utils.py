@@ -59,3 +59,27 @@ def decode_packet(command_bytes):
         resp_data = command_bytes[PACKET_HEADER_SIZE - 1 : + PACKET_HEADER_SIZE + data_len - 1].decode(encoding = 'ascii')
 
     return command_type, resp_data
+
+def decode_header_packet(header_bytes):
+
+    if (len(header_bytes) < PACKET_HEADER_SIZE):
+        return []
+
+    if header_bytes[0] != 0x55:
+        """ malformed packet """
+        return []
+    
+    seq_num = header_bytes[1]
+    data_len = (header_bytes[2] << 8) | (header_bytes[3] 0xFF)
+
+    return [seq_num, data_len]
+
+def decode_data_packet(command_bytes, exp_length, reqd_encoding = 'ascii'):
+
+    if (len(command_bytes) < exp_length):
+        return None
+
+    resp_data = bytearray(exp_length)
+    resp_data = command_bytes.decode(encoding = reqd_encoding)
+
+    return resp_data
