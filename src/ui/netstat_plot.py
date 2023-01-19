@@ -25,22 +25,22 @@ class NetStatStream():
 
     def timer_callback(self):
 
-        try:
-            self.response_received.clear()
-            self.instant_resp_cmnd_handle.issue_command("netstat", self.default_netstat_rx_callback)
-            # Wait for the response.
-            self.response_received.wait()
-        except:
-            pass
+        # try:
+        #     self.response_received.clear()
+        #     self.instant_resp_cmnd_handle.issue_command("netstat", self.default_netstat_rx_callback)
+        #     # Wait for the response.
+        #     self.response_received.wait()
+        # except:
+        #     pass
 
-        if self.netstat_data == None:
-            return
+        # if self.netstat_data == None:
+        #     return
 
-        #self.plot_handle.update_plot_data(randrange(10), 0)
+        self.plot_handle.update_plot_data(randrange(10), randrange(10) + 5)
 
-        deserialized_stats = network_stats_deserializer.deserialize_network_stats(self.netstat_data)
-        self.plot_handle.update_plot_data(deserialized_stats.rx_latency, deserialized_stats.tx_latency)
-        self.netstat_data = None
+        # deserialized_stats = network_stats_deserializer.deserialize_network_stats(self.netstat_data)
+        # self.plot_handle.update_plot_data(deserialized_stats.rx_latency, deserialized_stats.tx_latency)
+        # self.netstat_data = None
 
 
     def default_netstat_rx_callback(self, response):
@@ -71,6 +71,8 @@ class NetStatStream():
 
 
 NETSTAT_PLOT_COLOR = '#0099ff'
+NETSTAT_PLOT_COLOR_RX_LATENCY_CURVE = '#0094d1'
+NETSTAT_PLOT_COLOR_TX_LATENCY_CURVE = '#8b1ec9'
 NETSTAT_PLOT_AXIS_LABEL_COLOR = '#000000'
 NETSTAT_PLOT_AXIS_LABEL_FONT_SIZE = "12pt"
 NETSTAT_PLOT_COLOR_LEFT_Y_AXIS_NAME =  "ms"
@@ -85,6 +87,7 @@ class NetStat_MainWindowPlotter:
 
         self.plot_x_axis_data = []
         self.plot_y_axis_data = []
+        self.plot_y2_axis_data = []
         self.num_current_data_pts = 0
         self.is_plot_paused = False
 
@@ -99,30 +102,31 @@ class NetStat_MainWindowPlotter:
 
         self.netstat_plot_plot_item.showGrid(x = True, y = True, alpha = 0.1)
 
-        """ Create one curves and add it to the plotWidget """
-        self.netstat_plot_curve_item = pg.PlotCurveItem(pen=({'color': NETSTAT_PLOT_COLOR, 'width': 2}), skipFiniteCheck=True)
-        self.netstat_plot_plot_widget.addItem(self.netstat_plot_curve_item)
+        """ Create two curves and add it to the plotWidget """
+        self.netstat_plot_curve_item_rx_latency = pg.PlotCurveItem(pen=({'color': NETSTAT_PLOT_COLOR_RX_LATENCY_CURVE, 'width': 2}), skipFiniteCheck=True)
+        self.netstat_plot_plot_widget.addItem(self.netstat_plot_curve_item_rx_latency)
+        self.netstat_plot_curve_item_tx_latency = pg.PlotCurveItem(pen=({'color': NETSTAT_PLOT_COLOR_TX_LATENCY_CURVE, 'width': 2}), skipFiniteCheck=True)
+        self.netstat_plot_plot_widget.addItem(self.netstat_plot_curve_item_tx_latency)
 
         logger.info("Init plot")
 
 
-    def append_stream_data_to_list(self, strm_data):
+    def append_stream_data_to_list(self, strm_data, strm_data2):
 
-        if strm_data != None:
-            self.plot_y_axis_data.append(strm_data)
-        else:
-            self.plot_y_axis_data.append(0)
+        self.plot_y_axis_data.append(strm_data if strm_data != None else 0)
+        self.plot_y2_axis_data.append(strm_data if strm_data2 != None else 0)
 
         self.plot_x_axis_data.append(time.time())
 
 
-    def parse_curve_data(self, strm_data):
+    def parse_curve_data(self, strm_data, strm_data2):
         if self.num_current_data_pts < DEFAULT_MAX_NETSTAT_PLOT_REAL_TIME_DATA:
-            self.append_stream_data_to_list(strm_data)
+            self.append_stream_data_to_list(strm_data, strm_data2)
             self.num_current_data_pts += 1
         else:
             self.plot_x_axis_data = self.plot_x_axis_data[1:]
             self.plot_y_axis_data = self.plot_y_axis_data[1:]
+            self.plot_y2_axis_data = self.plot_y2_axis_data[1:]
             self.append_stream_data_to_list(strm_data)
 
     def update_plot_data(self, strm_data, strm_data2):
@@ -133,9 +137,11 @@ class NetStat_MainWindowPlotter:
         """
         try:
             if not self.is_plot_paused:
-                self.parse_curve_data(strm_data)
-                self.netstat_plot_curve_item.setData(self.plot_x_axis_data[:self.num_current_data_pts], \
+                self.parse_curve_data(strm_data, strm_data2)
+                self.netstat_plot_curve_item_rx_latency.setData(self.plot_x_axis_data[:self.num_current_data_pts], \
                     self.plot_y_axis_data[:self.num_current_data_pts])
+                self.netstat_plot_curve_item_tx_latency.setData(self.plot_x_axis_data[:self.num_current_data_pts], \
+                    self.plot_y2_axis_data[:self.num_current_data_pts])
         except:
             logger.error("Exception in append_stream_data_to_list: {}".format(strm_data))
 
@@ -147,7 +153,8 @@ class NetStat_MainWindowPlotter:
         self.plot_x_axis_data = []
         self.plot_y_axis_data = []
         self.num_current_data_pts = 0
-        self.netstat_plot_curve_item.setData([])
+        self.netstat_plot_curve_item_rx_latency.setData([])
+        self.netstat_plot_curve_item_tx_latency.setData([])
         logger.info("")
 
     def reset_plot(self):
