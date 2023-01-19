@@ -36,6 +36,8 @@ class PC_App_Handler(QObject):
         self.main_window.pb_connect.clicked.connect(self.pb_connect_clicked)
         self.main_window.pb_disconnect.clicked.connect(self.pb_disconnect_clicked)
         self.main_window.pb_send_cmnd.clicked.connect(self.pb_send_command_clicked)
+        self.main_window.pb_clear.clicked.connect(self.pb_plot_clear_clicked)
+        self.main_window.pb_reset.clicked.connect(self.pb_plot_reset_clicked)
 
     def connect_local_signals(self):
         self.command_completed_signal.connect(self.command_completed_slot)
@@ -75,3 +77,9 @@ class PC_App_Handler(QObject):
     # not manipulate the UI.
     def command_completed_callback(self, response):
         self.command_completed_signal.emit(response)
+
+    def pb_plot_clear_clicked(self):
+        self.net_stat_plot_h.clear_plot_data()
+
+    def pb_plot_reset_clicked(self):
+        self.net_stat_plot_h.reset_plot()

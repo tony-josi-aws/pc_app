@@ -35,7 +35,7 @@ class NetStatStream():
             if data_stream == '':
                 return
 
-            #self.plot_handle.update_plot_data(randrange(10))
+            self.plot_handle.update_plot_data(randrange(10))
             self.plot_handle.update_plot_data(data_stream)
 
 

@@ -267,14 +267,14 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton">
+                 <widget class="QPushButton" name="pb_clear">
                   <property name="text">
                    <string>Clear Plot</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton_2">
+                 <widget class="QPushButton" name="pb_reset">
                   <property name="text">
                    <string>Reset</string>
                   </property>
