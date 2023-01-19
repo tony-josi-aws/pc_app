@@ -4,6 +4,7 @@ from cmd import Cmd
 from communication_utils.comm_agent import CommAgent
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 from utils.network_stats_deserializer import deserialize_network_stats
+from utils.kernel_stats_deserializer import deserialize_kernel_stats
 
 class UI_Cli(Cmd):
     intro = "Welcome to the FreeRTOS Inspector shell! Type ? to list commands."
@@ -58,6 +59,8 @@ class UI_Cli(Cmd):
             callback =self.pcap_get_command_complete_callback
         if cmnd.strip().lower() == "netstat":
             callback =self.netstat_command_complete_callback
+        if cmnd.strip().lower() == "top":
+            callback =self.top_command_complete_callback
         return callback
 
     def default_command_complete_callback(self, response):
@@ -91,6 +94,16 @@ class UI_Cli(Cmd):
         if response is not None:
             str_resp = response.decode(encoding = 'ascii')
             deserialized_stats = deserialize_network_stats(str_resp)
+            print(deserialized_stats)
+        else:
+            print("Timed out while waiting for response!")
+        # Signal the do_send function to return.
+        self.response_received.set()
+
+    def top_command_complete_callback(self, response):
+        if response is not None:
+            str_resp = response.decode(encoding = 'ascii')
+            deserialized_stats = deserialize_kernel_stats(str_resp)
             print(deserialized_stats)
         else:
             print("Timed out while waiting for response!")
