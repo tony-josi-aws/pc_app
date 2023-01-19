@@ -3,7 +3,7 @@ import time
 import logging
 import threading
 
-from PyQt5.QtCore import QObject
+from PyQt5.QtCore import QObject, QTimer
 from PyQt5 import QtCore, QtWidgets
 
 from communication_utils.comm_agent import CommAgent
@@ -19,8 +19,13 @@ class PC_App_Handler(QObject):
         self.main_window = main_window_h
         self.comm_interface = None
         self.comm_agent = None
-        self.net_stat_plot_h = netstat_plot.NetStat_MainWindowPlotter(self.main_window.plot_netstat)
 
+        self.net_stat_plot_h = netstat_plot.NetStat_MainWindowPlotter(self.main_window.plot_netstat)
+        self.net_stat_cmnd_h = netstat_plot.NetStatStream(self.comm_agent, self.net_stat_plot_h)
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.net_stat_cmnd_h.timer_callback)
+        self.timer.start(500)
+        
         # Connect available signals to the callbacks.
         self.connect_pyqt_main_window_signals()
 

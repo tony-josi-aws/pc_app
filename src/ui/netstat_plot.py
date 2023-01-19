@@ -2,6 +2,7 @@
 import time
 import logging
 import threading
+from random import randrange
 from datetime import datetime
 
 import pyqtgraph as pg
@@ -11,23 +12,17 @@ DEFAULT_MAX_STREAM_TIME_PERIOD_SEC = 1
 
 logger = logging.getLogger(__name__)
 
-class NetStatStream(QtCore.QThread):
+class NetStatStream():
 
-    gui_stream_handle_cb = QtCore.pyqtSignal(str)
-
-    def __init__(self, instant_resp_cmnd_handle) -> None:
-        super(NetStatStream, self).__init__()
+    def __init__(self, instant_resp_cmnd_handle, plot_handle) -> None:
         self.instant_resp_cmnd_handle = instant_resp_cmnd_handle
-        self.kill_netstat_plot = False
         self.response_received = threading.Event()
+        self.plot_handle = plot_handle
         self.netstat_data = None
         logger.info("Init NetStatStream thread")
 
-    def run(self):
+    def timer_callback(self):
 
-        prev_data_stream_time = datetime.now()
-        logger.info("NetStatStream thread function")
-        while True:
             data_stream = ''
             try:
                 self.response_received.clear()
@@ -37,14 +32,12 @@ class NetStatStream(QtCore.QThread):
             except:
                 pass
 
-            if self.kill_netstat_plot:
-                break
-
             if data_stream == '':
-                continue
+                return
 
-            self.gui_stream_handle_cb.emit(self.netstat_data)
-            time.sleep(DEFAULT_MAX_STREAM_TIME_PERIOD_SEC)
+            #self.plot_handle.update_plot_data(randrange(10))
+            self.plot_handle.update_plot_data(data_stream)
+
 
     def default_netstat_rx_callback(self, response):
         if response is not None:
@@ -110,7 +103,7 @@ class NetStat_MainWindowPlotter:
     def append_stream_data_to_list(self, strm_data):
 
         if strm_data != None:
-            self.plot_y_axis_data.append(strm_data.stream_data)
+            self.plot_y_axis_data.append(strm_data)
         else:
             self.plot_y_axis_data.append(0)
 
