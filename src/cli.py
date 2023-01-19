@@ -53,12 +53,12 @@ class UI_Cli(Cmd):
             return True
 
     def do_send(self, cmnd):
-        if cmnd.lower() == "pcap download":
+        if cmnd.lower() == "pcap get":
             rx_data = self.instant_cmnd.send_command_recv_resp(cmnd, write_to_file = True)
         else:
             rx_data = self.instant_cmnd.send_command_recv_resp(cmnd)
-        
-        try: 
+
+        try:
             str_resp = rx_data[1].decode(encoding = 'ascii')
             print("RX Status: {}, Msg: {}".format("OK" if rx_data[0] == True else "FAIL" , str_resp))
         except:
@@ -71,4 +71,3 @@ if __name__ == "__main__":
 
     UI_Cli().cmdloop()
 
-    

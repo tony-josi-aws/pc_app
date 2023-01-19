@@ -4,7 +4,7 @@ import logging
 udp_sock_logger = logging.getLogger(__name__)
 
 class UDPSocket_CommInterface:
-    
+
     def __init__(self, target_ip, target_port) -> None:
 
         self.target_ip = target_ip
@@ -19,7 +19,7 @@ class UDPSocket_CommInterface:
         except Exception as e:
             udp_sock_logger.critical(f"UDP connect failed : {e}.", exc_info=True)
 
-    def get_rx(self, bytes_to_receive = 1024):
+    def get_rx(self, bytes_to_receive = 2048):
         try:
             rx_data = self.udp_socket.recvfrom(bytes_to_receive)
             return rx_data[0]
@@ -30,7 +30,7 @@ class UDPSocket_CommInterface:
 
     def send_data_bytes(self, data_bytes):
         try:
-            self.udp_socket.sendto(data_bytes, (self.target_ip, self.target_port))      
+            self.udp_socket.sendto(data_bytes, (self.target_ip, self.target_port))
         except Exception as e:
             udp_sock_logger.critical(f"UDP send_data_bytes failed : {e}.", exc_info=True)
 
@@ -39,4 +39,3 @@ class UDPSocket_CommInterface:
 
     def close_interface(self):
         self.udp_socket.close()
-          
