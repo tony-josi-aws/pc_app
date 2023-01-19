@@ -33,8 +33,6 @@ class PC_App_Handler(QObject):
         self.main_window.pb_connect.clicked.connect(self.pb_connect_clicked)
         self.main_window.pb_disconnect.clicked.connect(self.pb_disconnect_clicked)
         self.main_window.pb_send_cmnd.clicked.connect(self.pb_send_command_clicked)
-        # self.main_window.pb_clear.clicked.connect(self.pb_plot_clear_clicked)
-        # self.main_window.pb_reset.clicked.connect(self.pb_plot_reset_clicked)
         self.main_window.pb_clear_cli.clicked.connect(self.pb_clear_cli_clicked)
 
     def connect_local_signals(self):
@@ -47,16 +45,15 @@ class PC_App_Handler(QObject):
         self.comm_agent = CommAgent(self.comm_interface)
         self.comm_agent.start_command_processing()
 
-        
         self.net_stat_cmnd_h = netstat_plot.NetStatStream(self.comm_agent, self.net_stat_plot_h)
         self.net_stat_plot_timer = QTimer()
         self.net_stat_plot_timer.timeout.connect(self.net_stat_cmnd_h.timer_callback)
         self.net_stat_plot_timer.start(500)
 
-        self.task_info_h = task_table.KernelTask_TableHandler(self.comm_agent, self.net_stat_plot_h)
+        self.task_info_h = task_table.KernelTask_TableHandler(self.comm_agent, self.main_window.tw_task_info)
         self.task_info_table_timer = QTimer()
         self.task_info_table_timer.timeout.connect(self.task_info_h.timer_callback)
-        self.task_info_table_timer.start(500)
+        self.task_info_table_timer.start(1000)
 
     def pb_disconnect_clicked(self):
         if self.comm_agent is not None:
@@ -68,7 +65,6 @@ class PC_App_Handler(QObject):
             # Stop timers
             self.net_stat_plot_timer.stop()
             self.task_info_table_timer.stop()
-
 
     def pb_send_command_clicked(self):
         command = str(self.main_window.cli_stdin.text())
@@ -91,12 +87,6 @@ class PC_App_Handler(QObject):
     # not manipulate the UI.
     def command_completed_callback(self, response):
         self.command_completed_signal.emit(response)
-
-    def pb_plot_clear_clicked(self):
-        self.net_stat_plot_h.clear_plot_data()
-
-    def pb_plot_reset_clicked(self):
-        self.net_stat_plot_h.reset_plot()
 
     def pb_clear_cli_clicked(self):
         self.main_window.cli_stdout.clear()
