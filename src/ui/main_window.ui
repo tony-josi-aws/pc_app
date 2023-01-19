@@ -134,7 +134,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QTableWidget" name="tableWidget">
+              <widget class="QTableWidget" name="tw_task_info">
                <property name="rowCount">
                 <number>8</number>
                </property>
@@ -239,7 +239,7 @@
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_4">
                 <item>
-                 <widget class="NetStat_PlotWdidget" name="graphicsView"/>
+                 <widget class="NetStat_PlotWdidget" name="plot_netstat"/>
                 </item>
                </layout>
               </widget>
@@ -260,7 +260,7 @@
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
-                    <width>479</width>
+                    <width>478</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -338,21 +338,21 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_8">
+           <widget class="QPushButton" name="pb_start_pcap">
             <property name="text">
              <string>Start PCAP Capture</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_9">
+           <widget class="QPushButton" name="pb_stop_pcap">
             <property name="text">
              <string>Stop PCAP Capture</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_10">
+           <widget class="QPushButton" name="pb_download_pcap">
             <property name="text">
              <string>Download PCAP Data</string>
             </property>
@@ -452,7 +452,7 @@
      <x>0</x>
      <y>0</y>
      <width>1113</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

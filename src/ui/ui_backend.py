@@ -19,7 +19,7 @@ class PC_App_Handler(QObject):
         self.main_window = main_window_h
         self.comm_interface = None
         self.comm_agent = None
-        self.net_stat_plot_h = netstat_plot.NetStat_MainWindowPlotter(self.main_window.graphicsView)
+        self.net_stat_plot_h = netstat_plot.NetStat_MainWindowPlotter(self.main_window.plot_netstat)
 
         # Connect available signals to the callbacks.
         self.connect_pyqt_main_window_signals()
