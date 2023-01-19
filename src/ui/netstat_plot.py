@@ -8,6 +8,8 @@ from datetime import datetime
 import pyqtgraph as pg
 from PyQt5 import QtCore
 
+from utils import network_stats_deserializer
+
 DEFAULT_MAX_STREAM_TIME_PERIOD_SEC = 1
 
 logger = logging.getLogger(__name__)
@@ -25,7 +27,7 @@ class NetStatStream():
 
         try:
             self.response_received.clear()
-            self.instant_resp_cmnd_handle.issue_command("netstat get", self.default_netstat_rx_callback)
+            self.instant_resp_cmnd_handle.issue_command("netstat", self.default_netstat_rx_callback)
             # Wait for the response.
             self.response_received.wait()
         except:
@@ -34,8 +36,10 @@ class NetStatStream():
         if self.netstat_data == None:
             return
 
-        #self.plot_handle.update_plot_data(randrange(10))
-        self.plot_handle.update_plot_data(self.parse_net_stat_resp_str())
+        #self.plot_handle.update_plot_data(randrange(10), 0)
+
+        deserialized_stats = network_stats_deserializer.deserialize_network_stats(self.netstat_data)
+        self.plot_handle.update_plot_data(deserialized_stats.rx_latency, deserialized_stats.tx_latency)
         self.netstat_data = None
 
 
@@ -121,7 +125,7 @@ class NetStat_MainWindowPlotter:
             self.plot_y_axis_data = self.plot_y_axis_data[1:]
             self.append_stream_data_to_list(strm_data)
 
-    def update_plot_data(self, strm_data):
+    def update_plot_data(self, strm_data, strm_data2):
 
         """ 
         Parse the stream data from the Stream_Data object and plot
