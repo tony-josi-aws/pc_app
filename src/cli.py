@@ -17,14 +17,21 @@ def time_out_callback(comnd):
 
 class UI_Cli(Cmd):
 
+    prompt = '>>> '
+    intro = "Welcome! Type ? to list commands"
+
     def __init__(self) -> None:
         super(UI_Cli, self).__init__()
         self.comm_interface = None
         self.instant_cmnd = None
 
-    def do_connect(self, address):
-        target_ip = address.split()[0]
-        target_port = int(address.split()[1])
+    def do_connect(self, addr):
+        address = addr.split()
+        if (len(address) < 2):
+            print("Error: Incorrect address, should be: connect <ip> <port>")
+            return
+        target_ip = address[0]
+        target_port = int(address[1])
         if self.comm_interface == None:
             self.comm_interface = UDPSocket_CommInterface(target_ip, target_port)
             self.instant_cmnd = App_InstantRespCommandApp(self.comm_interface)
@@ -56,6 +63,9 @@ class UI_Cli(Cmd):
             print("RX Msg: {}".format(str_resp))
         except:
             print("RX Msg: {}".format(rx_data[1]))
+
+    def default(self, line):
+        print("Unknown command... Type ? to list commands")
 
 if __name__ == "__main__":
 
