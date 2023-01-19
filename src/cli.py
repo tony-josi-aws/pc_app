@@ -124,7 +124,7 @@ class UI_Cli(Cmd):
                 print( self.numbers_to_strings(count%6) + i)
                 count+=1
 
-            perf = stat[-2:]
+            perf = stat[-3:]
             print ("Rx Latency     : " + str(perf[0]))
             print ("Tx Latency     : " + str(perf[1]))
         else:
