@@ -41,7 +41,6 @@ class KernelTask_TableHandler(QObject):
                 str_resp = response.decode(encoding = 'ascii')
                 deserialized_kernel_stats = deserialize_kernel_stats(str_resp)
                 self.task_data = deserialized_kernel_stats.get_all_task_stats()
-                print(self.task_data)
                 self.top_command_completed_signal.emit()
             except:
                 pass
