@@ -11,6 +11,10 @@ class KernelStats(object):
     def get_all_task_stats(self):
         return self.all_tasks_stats
 
+    def get_simple_formatted_table(self):
+        table_header = ['Task Name', 'CPU Time', 'CPU %']
+        return tabulate(self.all_tasks_stats, headers=table_header, tablefmt="simple")
+
     def __str__(self) -> str:
         table_header = ['Task Name', 'CPU Time', 'CPU %']
         return tabulate(self.all_tasks_stats, headers=table_header, tablefmt="grid")

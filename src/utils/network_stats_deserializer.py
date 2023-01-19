@@ -23,7 +23,7 @@ class NetworkStats(object):
         self.rx_latency = 0
         self.tx_latency = 0
 
-    def __str__(self) -> str:
+    def _format(self, fmt):
         table_header = ['Metric', 'Value']
         table_rows = [
             [ "UDP: Packets Received",      self.udp_packet_rx ],
@@ -47,7 +47,14 @@ class NetworkStats(object):
             [ "Rx Latency",                 self.rx_latency ],
             [ "Tx Latency",                 self.tx_latency ],
         ]
-        return tabulate(table_rows, headers=table_header, tablefmt="grid")
+        return tabulate(table_rows, headers=table_header, tablefmt=fmt)
+
+    def get_simple_formatted_table(self):
+        return self._format("simple")
+
+    def __str__(self) -> str:
+        return self._format("grid")
+
 
 def deserialize_network_stats(network_stats_str):
     deserialized_stats = NetworkStats()

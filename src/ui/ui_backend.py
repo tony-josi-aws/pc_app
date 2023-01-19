@@ -11,6 +11,10 @@ from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 
 from ui import netstat_plot, task_table
 
+from utils.network_stats_deserializer import deserialize_network_stats
+from utils.kernel_stats_deserializer import deserialize_kernel_stats
+
+
 class PC_App_Handler(QObject):
     command_completed_signal = QtCore.pyqtSignal(object)
 
@@ -70,9 +74,20 @@ class PC_App_Handler(QObject):
         command = str(self.main_window.cli_stdin.text())
         command = command.strip()
         if command:
-            self.comm_agent.issue_command(command, self.command_completed_callback)
+            if command == "top":
+                self.comm_agent.issue_command(command, self.top_command_completed_callback)
+            elif command == "netstat":
+                self.comm_agent.issue_command(command, self.netstat_command_completed_callback)
+            else:
+                self.comm_agent.issue_command(command, self.command_completed_callback)
 
-    def command_completed_slot(self, response):
+    def command_completed_slot(self, str_resp):
+        self.main_window.cli_stdout.append(str_resp)
+        self.main_window.cli_stdout.append("\n------------------------\n")
+
+    # This callback runs in the comm agent thread's context and therefore, must
+    # not manipulate the UI.
+    def command_completed_callback(self, response):
         if response is not None:
             try:
                 str_resp = response.decode(encoding = 'ascii')
@@ -80,13 +95,35 @@ class PC_App_Handler(QObject):
                 str_resp = "Non-Printable response!"
         else:
             str_resp = "Timed out while waiting for response!"
-
-        self.main_window.cli_stdout.append(str_resp)
+        self.command_completed_signal.emit(str_resp)
 
     # This callback runs in the comm agent thread's context and therefore, must
     # not manipulate the UI.
-    def command_completed_callback(self, response):
-        self.command_completed_signal.emit(response)
+    def netstat_command_completed_callback(self, response):
+        if response is not None:
+            try:
+                ascii_resp = response.decode(encoding = 'ascii')
+                deserialized_stats = deserialize_network_stats(ascii_resp)
+                str_resp = str(deserialized_stats.get_simple_formatted_table())
+            except:
+                str_resp = "Non-Printable response!"
+        else:
+            str_resp = "Timed out while waiting for response!"
+        self.command_completed_signal.emit(str_resp)
+
+    # This callback runs in the comm agent thread's context and therefore, must
+    # not manipulate the UI.
+    def top_command_completed_callback(self, response):
+        if response is not None:
+            try:
+                ascii_resp = response.decode(encoding = 'ascii')
+                deserialized_stats = deserialize_kernel_stats(ascii_resp)
+                str_resp = str(deserialized_stats.get_simple_formatted_table())
+            except:
+                str_resp = "Non-Printable response!"
+        else:
+            str_resp = "Timed out while waiting for response!"
+        self.command_completed_signal.emit(str_resp)
 
     def pb_clear_cli_clicked(self):
         self.main_window.cli_stdout.clear()
