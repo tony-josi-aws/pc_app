@@ -15,24 +15,21 @@ class UDPSocket_CommInterface:
     def connect(self):
         try:
             self.udp_socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-            #self.udp_socket.bind((self.target_ip, self.target_port))
         except Exception as e:
             udp_sock_logger.critical(f"UDP connect failed : {e}.", exc_info=True)
 
-    def get_rx(self, bytes_to_receive = 2048):
+    def recv(self, bytes_to_receive = 2048):
         try:
             rx_data = self.udp_socket.recvfrom(bytes_to_receive)
             return rx_data[0]
         except Exception as e:
             udp_sock_logger.info(f"UDP get_rx failed : {e}.", exc_info=True)
-            pass
 
-
-    def send_data_bytes(self, data_bytes):
+    def send(self, data_bytes):
         try:
             self.udp_socket.sendto(data_bytes, (self.target_ip, self.target_port))
         except Exception as e:
-            udp_sock_logger.critical(f"UDP send_data_bytes failed : {e}.", exc_info=True)
+            udp_sock_logger.critical(f"UDP send failed : {e}.", exc_info=True)
 
     def set_timeout(self, timeout):
         self.udp_socket.settimeout(timeout)

@@ -1,35 +1,20 @@
 ## PC App
 
 PC app to communicate with the device.
-### Using virtual enviorment (venv)
 
-Create: `python -m venv <project_name>`
+## Using CLI
 
-Activate: 
+1. Start CLI:
+```
+python src\cli.py
+```
 
-* Windows: `<project_name>/Scripts/activate.bat`
-* Linux:   `source <venv>/bin/activate`
+1. Connect to the device:
+```
+connect 127.0.0.1 20001
+```
 
-Install required python modules from `requirements.txt`: `pip install -r requirements.txt`
-
-
-#### Run CLI and test command echo
-Start simple echo server: 
-
-`python src\server.py`
-
-Start CLI: 
-
-`python src\cli.py`
-
-Connect to server:
-
-`connect 127.0.0.1 20001`
-
-Send commands:
-
-`send <command>`
-
-
-Deactivate venv: `deactivate`
-
+1. Send a command to the device:
+```
+send <command>
+```

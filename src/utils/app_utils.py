@@ -1,80 +1,112 @@
-import re
 import logging
+from collections import defaultdict
 
 util_lib_logger = logging.getLogger(__name__)
 
-INSTANT_RESP_CMND_ID    = 0xDE
 PACKET_HEADER_SIZE      = 4
+PACKET_START_MARKER     = 0x55
 
-COMMAND_TYPE_REQUEST    = 0x00
-COMMAND_TYPE_RESPONSE   = 0x01
 
-def get_command_id(commnd_data):
+class ResponseDecoder(object):
+    def __init__(self) -> None:
+        self.header_received = False
+        self.unconsumed_response = bytearray()
+        self.remaining_chunk_length = None
+        self.cur_chunk_number = None
+        self.packet_complete = False
+        self.valid_packet = True
+        self.chunks = defaultdict(bytearray)
 
-    if len(commnd_data) > 2:
-        return commnd_data[2]
-    else:
-        return 0xFF
+    def decode_response(self, raw_response):
+        self.unconsumed_response += raw_response
 
-def encode_packet(command_data):
+        while len(self.unconsumed_response) > 0 and ( self.packet_complete == False ) and ( self.valid_packet == True ):
+            if not self.header_received:
+                if len(self.unconsumed_response) >= 4:
+                    self.decode_header()
+                else:
+                    # Not enough bytes yet for a header.
+                    break
+            else:
+                self.decode_body()
 
-    try:
-        command_data = command_data.encode('ascii')
-    except Exception as e:
-        util_lib_logger.critical(f"Cant encode command: {e}")
-        return None
+    def is_packet_complete(self):
+        return self.packet_complete
 
-    command_len = len(command_data)
-    total_len = command_len + PACKET_HEADER_SIZE
-    data_bytes = bytearray(total_len)
+    def get_decoded_response(self):
+        if not self.valid_packet:
+            util_lib_logger.critical(f"Invalid response!")
+            return None
 
-    data_bytes[0] = 0x55
+        chunk_numbers = self.chunks.keys()
+        chunk_numbers = sorted(chunk_numbers)
+        missing_chunks = [n for n in range(1,len(chunk_numbers)+1) if n not in chunk_numbers]
+        if len(missing_chunks) > 0:
+            util_lib_logger.critical(f"Missing chunks!")
+            return None
 
-    data_bytes[1] = 1
+        resp = bytearray()
+        for chunk in chunk_numbers:
+            resp += self.chunks[chunk]
 
-    data_bytes[2] = command_len >> 8
-    data_bytes[3] = command_len & 0xFF
+        return resp
 
-    data_bytes[4:] = bytearray(command_data)
 
-    return data_bytes
+    def decode_header(self):
+        start_marker = self.unconsumed_response[0]
+        chunk_number = self.unconsumed_response[1]
+        chunk_length = (self.unconsumed_response[2] << 8) | (self.unconsumed_response[3] & 0xFF)
 
-# def decode_packet(command_bytes):
+        if start_marker != PACKET_START_MARKER:
+            self.valid_packet = False
+            self.packet_complete = True
+            return
 
-#     if (len(command_bytes) < PACKET_HEADER_SIZE):
-#         return None, None
+        if chunk_length == 0:
+            # last chunk received
+            self.packet_complete = True
+            return
 
-#     command_type = COMMAND_TYPE_REQUEST if command_bytes[1] == COMMAND_TYPE_REQUEST else COMMAND_TYPE_RESPONSE
+        self.unconsumed_response = self.unconsumed_response[4:]
+        self.remaining_chunk_length = chunk_length
+        self.cur_chunk_number = chunk_number
 
-#     data_len = command_bytes[2]
-#     data_len = (data_len << 8) | command_bytes[3]
-#     resp_data = bytearray(data_len)
+        self.header_received = True
 
-#     if (len(command_bytes) >= data_len + PACKET_HEADER_SIZE):
-#         resp_data = command_bytes[PACKET_HEADER_SIZE - 1 : + PACKET_HEADER_SIZE + data_len - 1].decode(encoding = 'ascii')
+    def decode_body(self):
+        if len(self.unconsumed_response) >= self.remaining_chunk_length:
+            self.chunks[self.cur_chunk_number] += self.unconsumed_response[:self.remaining_chunk_length]
+            self.unconsumed_response = self.unconsumed_response[self.remaining_chunk_length:]
+            # We now expect header for next chunk
+            self.header_received = False
+        else:
+            self.chunks[self.cur_chunk_number] += self.unconsumed_response
+            self.remaining_chunk_length -= len(self.unconsumed_response)
+            self.unconsumed_response = bytearray()
 
-#     return command_type, resp_data
 
-def decode_header_packet(header_bytes):
+class RequestEncoder(object):
+    def __init__(self) -> None:
+        pass
 
-    if (len(header_bytes) < PACKET_HEADER_SIZE):
-        return []
+    def encode_command(self, command):
+        try:
+            command = command.encode('ascii')
+        except Exception as e:
+            util_lib_logger.critical(f"Cant encode command: {e}")
+            return None
 
-    if header_bytes[0] != 0x55:
-        """ malformed packet """
-        return []
+        command_len = len(command)
+        total_len = command_len + PACKET_HEADER_SIZE
 
-    seq_num = header_bytes[1]
-    data_len = (header_bytes[2] << 8) | (header_bytes[3] & 0xFF)
+        encoded_command = bytearray(total_len)
+        encoded_command[0] = PACKET_START_MARKER
+        encoded_command[1] = 1 # packet number
+        # Next two bytes are length of actual command encoded in
+        # network byte order.
+        encoded_command[2] = command_len >> 8
+        encoded_command[3] = command_len & 0xFF
+        # Actual command comes after that.
+        encoded_command[4:] = bytearray(command)
 
-    return [seq_num, data_len]
-
-def decode_data_packet(command_bytes, exp_length, reqd_encoding = 'ascii'):
-
-    if (len(command_bytes) < exp_length):
-        return None
-
-    resp_data = bytearray(exp_length)
-    resp_data = command_bytes
-
-    return resp_data
+        return encoded_command
