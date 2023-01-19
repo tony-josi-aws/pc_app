@@ -53,7 +53,7 @@ class UI_Cli(Cmd):
             return True
 
     def do_send(self, cmnd):
-        if cmnd.lower() == "pcap":
+        if cmnd.lower() == "pcap download":
             rx_data = self.instant_cmnd.send_command_recv_resp(cmnd, write_to_file = True)
         else:
             rx_data = self.instant_cmnd.send_command_recv_resp(cmnd)
