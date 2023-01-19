@@ -9,6 +9,7 @@ from PyQt5 import QtCore, QtWidgets
 from communication_utils.comm_agent import CommAgent
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 
+from ui import netstat_plot
 
 class PC_App_Handler(QObject):
     command_completed_signal = QtCore.pyqtSignal(object)
@@ -18,6 +19,7 @@ class PC_App_Handler(QObject):
         self.main_window = main_window_h
         self.comm_interface = None
         self.comm_agent = None
+        self.net_stat_plot_h = netstat_plot.NetStat_MainWindowPlotter(self.main_window.graphicsView)
 
         # Connect available signals to the callbacks.
         self.connect_pyqt_main_window_signals()

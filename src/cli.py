@@ -79,7 +79,7 @@ class UI_Cli(Cmd):
 
     def select_callback_for_command(self, cmnd):
         callback = self.default_command_complete_callback
-        if cmnd.strip() == "pcap get":
+        if cmnd.strip().lower() == "pcap get":
             callback =self.pcap_get_command_complete_callback
         if cmnd.strip().lower() == "netstat get":
             callback =self.netstat_get_command_complete_callback
