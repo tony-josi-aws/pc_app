@@ -60,9 +60,9 @@ class UI_Cli(Cmd):
         
         try: 
             str_resp = rx_data[1].decode(encoding = 'ascii')
-            print("RX Msg: {}".format(str_resp))
+            print("RX Status: {}, Msg: {}".format("OK" if rx_data[0] == True else "FAIL" , str_resp))
         except:
-            print("RX Msg: {}".format(rx_data[1]))
+            print("RX Status: {}, Msg: {}".format("OK" if rx_data[0] == True else "FAIL", rx_data[1]))
 
     def default(self, line):
         print("Unknown command... Type ? to list commands")

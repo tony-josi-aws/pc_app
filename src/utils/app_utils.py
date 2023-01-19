@@ -39,21 +39,21 @@ def encode_packet(command_data):
 
     return data_bytes
 
-def decode_packet(command_bytes):
+# def decode_packet(command_bytes):
 
-    if (len(command_bytes) < PACKET_HEADER_SIZE):
-        return None, None
+#     if (len(command_bytes) < PACKET_HEADER_SIZE):
+#         return None, None
 
-    command_type = COMMAND_TYPE_REQUEST if command_bytes[1] == COMMAND_TYPE_REQUEST else COMMAND_TYPE_RESPONSE
+#     command_type = COMMAND_TYPE_REQUEST if command_bytes[1] == COMMAND_TYPE_REQUEST else COMMAND_TYPE_RESPONSE
 
-    data_len = command_bytes[2]
-    data_len = (data_len << 8) | command_bytes[3]
-    resp_data = bytearray(data_len)
+#     data_len = command_bytes[2]
+#     data_len = (data_len << 8) | command_bytes[3]
+#     resp_data = bytearray(data_len)
 
-    if (len(command_bytes) >= data_len + PACKET_HEADER_SIZE):
-        resp_data = command_bytes[PACKET_HEADER_SIZE - 1 : + PACKET_HEADER_SIZE + data_len - 1].decode(encoding = 'ascii')
+#     if (len(command_bytes) >= data_len + PACKET_HEADER_SIZE):
+#         resp_data = command_bytes[PACKET_HEADER_SIZE - 1 : + PACKET_HEADER_SIZE + data_len - 1].decode(encoding = 'ascii')
 
-    return command_type, resp_data
+#     return command_type, resp_data
 
 def decode_header_packet(header_bytes):
 
