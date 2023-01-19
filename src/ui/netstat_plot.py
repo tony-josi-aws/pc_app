@@ -25,22 +25,22 @@ class NetStatStream():
 
     def timer_callback(self):
 
-        # try:
-        #     self.response_received.clear()
-        #     self.instant_resp_cmnd_handle.issue_command("netstat", self.default_netstat_rx_callback)
-        #     # Wait for the response.
-        #     self.response_received.wait()
-        # except:
-        #     pass
+        try:
+            self.response_received.clear()
+            self.instant_resp_cmnd_handle.issue_command("netstat", self.default_netstat_rx_callback)
+            # Wait for the response.
+            self.response_received.wait()
+        except:
+            pass
 
-        # if self.netstat_data == None:
-        #     return
+        if self.netstat_data == None:
+            return
 
-        self.plot_handle.update_plot_data(randrange(10), randrange(5))
+        #self.plot_handle.update_plot_data(randrange(10), randrange(5))
 
-        # deserialized_stats = network_stats_deserializer.deserialize_network_stats(self.netstat_data)
-        # self.plot_handle.update_plot_data(deserialized_stats.rx_latency, deserialized_stats.tx_latency)
-        # self.netstat_data = None
+        deserialized_stats = network_stats_deserializer.deserialize_network_stats(self.netstat_data)
+        self.plot_handle.update_plot_data(deserialized_stats.rx_latency, deserialized_stats.tx_latency)
+        self.netstat_data = None
 
 
     def default_netstat_rx_callback(self, response):
@@ -107,7 +107,6 @@ class NetStat_MainWindowPlotter:
         self.netstat_plot_curve_item_rx_latency = pg.PlotCurveItem(pen=({'color': NETSTAT_PLOT_COLOR_RX_LATENCY_CURVE, 'width': 2}), skipFiniteCheck=True)
         self.netstat_plot_plot_widget.addItem(self.netstat_plot_curve_item_rx_latency)
 
-        #self.graph1_PlotItem = self.adv_plot_win.graph1_PlotWidget.plotItem
         self.netstat_plot_view_box = pg.ViewBox()
         self.netstat_plot_plot_item.showAxis('right')
         self.netstat_plot_plot_item.scene().addItem(self.netstat_plot_view_box)

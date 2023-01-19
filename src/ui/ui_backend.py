@@ -22,11 +22,7 @@ class PC_App_Handler(QObject):
 
         # Init plots widget
         self.net_stat_plot_h = netstat_plot.NetStat_MainWindowPlotter(self.main_window.plot_netstat)
-        self.net_stat_cmnd_h = netstat_plot.NetStatStream(self.comm_agent, self.net_stat_plot_h)
-        self.net_stat_plot_timer = QTimer()
-        self.net_stat_plot_timer.timeout.connect(self.net_stat_cmnd_h.timer_callback)
-        self.net_stat_plot_timer.start(500)
-        
+
         # Connect available signals to the callbacks.
         self.connect_pyqt_main_window_signals()
 
