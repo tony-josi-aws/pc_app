@@ -237,6 +237,9 @@ class Ui_MainWindow(object):
         self.pb_send_cmnd = QtWidgets.QPushButton(self.frame_8)
         self.pb_send_cmnd.setObjectName("pb_send_cmnd")
         self.horizontalLayout_2.addWidget(self.pb_send_cmnd)
+        self.pb_clear_cli = QtWidgets.QPushButton(self.frame_8)
+        self.pb_clear_cli.setObjectName("pb_clear_cli")
+        self.horizontalLayout_2.addWidget(self.pb_clear_cli)
         self.verticalLayout_3.addWidget(self.frame_8)
         self.verticalLayout_4.addWidget(self.frame_7)
         self.horizontalLayout.addWidget(self.frame)
@@ -280,4 +283,5 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "CLI"))
         self.label_4.setText(_translate("MainWindow", "Command:"))
         self.pb_send_cmnd.setText(_translate("MainWindow", "Send Command"))
+        self.pb_clear_cli.setText(_translate("MainWindow", "Clear CLI"))
 from custom_ui_widgets.netstat_plotwdidget import NetStat_PlotWdidget

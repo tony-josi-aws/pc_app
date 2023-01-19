@@ -435,6 +435,13 @@
                </property>
               </widget>
              </item>
+             <item>
+              <widget class="QPushButton" name="pb_clear_cli">
+               <property name="text">
+                <string>Clear CLI</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
           </item>
