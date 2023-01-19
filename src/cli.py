@@ -3,7 +3,7 @@ import threading
 from cmd import Cmd
 from communication_utils.comm_agent import CommAgent
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
-
+from utils.network_stats_deserializer import deserialize_network_stats
 
 class UI_Cli(Cmd):
     intro = "Welcome to the FreeRTOS Inspector shell! Type ? to list commands."
@@ -31,31 +31,6 @@ class UI_Cli(Cmd):
             self.do_disconnect("")
             self.do_connect(target_ip, target_port)
 
-    def numbers_to_strings(self, argument):
-        switcher = {
-            0: " Rx Packets      : ",
-            1: " Tx Packets      : ",
-            2: " Rx Packet Drop  : ",
-            3: " Tx Packet Drop  : ",
-            4: " Rx Bytes Send   : ",
-            5: " Tx Bytes Recv   : "
-        }
-        return switcher.get(argument, "nothing")
-
-    def print_header(self, count):
-        if count == 0:
-            var = "UDP "
-        if count == 6:
-            var = "TCP "
-        if count == 12:
-            var = "ICMP "
-        if count == 18:
-            var = "Performance "
-        if count % 6 == 0 :
-            print("---------------------------------")
-            print("   " + f"{var}"+"Network Statistic")
-            print("----------------------------------")
-
     def do_disconnect(self, cmnd):
         'Disconnect from the device. Syntax: disconnect'
         if self.comm_agent != None:
@@ -81,8 +56,8 @@ class UI_Cli(Cmd):
         callback = self.default_command_complete_callback
         if cmnd.strip().lower() == "pcap get":
             callback =self.pcap_get_command_complete_callback
-        if cmnd.strip().lower() == "netstat get":
-            callback =self.netstat_get_command_complete_callback
+        if cmnd.strip().lower() == "netstat":
+            callback =self.netstat_command_complete_callback
         return callback
 
     def default_command_complete_callback(self, response):
@@ -112,21 +87,11 @@ class UI_Cli(Cmd):
         # Signal the do_send function to return.
         self.response_received.set()
 
-    def netstat_get_command_complete_callback(self, response):
+    def netstat_command_complete_callback(self, response):
         if response is not None:
             str_resp = response.decode(encoding = 'ascii')
-            stat = str_resp.split(',')
-            count = 0
-            for i in stat:
-                self.print_header(count)
-                if count == 18:
-                    break;
-                print( self.numbers_to_strings(count%6) + i)
-                count+=1
-
-            perf = stat[-3:]
-            print ("Rx Latency     : " + str(perf[0]))
-            print ("Tx Latency     : " + str(perf[1]))
+            deserialized_stats = deserialize_network_stats(str_resp)
+            print(deserialized_stats)
         else:
             print("Timed out while waiting for response!")
         # Signal the do_send function to return.
