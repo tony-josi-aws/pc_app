@@ -33,8 +33,8 @@ class PC_App_Handler(QObject):
         self.main_window.pb_connect.clicked.connect(self.pb_connect_clicked)
         self.main_window.pb_disconnect.clicked.connect(self.pb_disconnect_clicked)
         self.main_window.pb_send_cmnd.clicked.connect(self.pb_send_command_clicked)
-        self.main_window.pb_clear.clicked.connect(self.pb_plot_clear_clicked)
-        self.main_window.pb_reset.clicked.connect(self.pb_plot_reset_clicked)
+        # self.main_window.pb_clear.clicked.connect(self.pb_plot_clear_clicked)
+        # self.main_window.pb_reset.clicked.connect(self.pb_plot_reset_clicked)
         self.main_window.pb_clear_cli.clicked.connect(self.pb_clear_cli_clicked)
 
     def connect_local_signals(self):
