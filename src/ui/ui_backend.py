@@ -9,7 +9,7 @@ from PyQt5 import QtCore, QtWidgets
 from communication_utils.comm_agent import CommAgent
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 
-from ui import netstat_plot
+from ui import netstat_plot, task_table
 
 class PC_App_Handler(QObject):
     command_completed_signal = QtCore.pyqtSignal(object)
@@ -20,12 +20,9 @@ class PC_App_Handler(QObject):
         self.comm_interface = None
         self.comm_agent = None
 
+        # Init plots widget
         self.net_stat_plot_h = netstat_plot.NetStat_MainWindowPlotter(self.main_window.plot_netstat)
-        self.net_stat_cmnd_h = netstat_plot.NetStatStream(self.comm_agent, self.net_stat_plot_h)
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.net_stat_cmnd_h.timer_callback)
-        self.timer.start(500)
-        
+
         # Connect available signals to the callbacks.
         self.connect_pyqt_main_window_signals()
 
@@ -50,12 +47,28 @@ class PC_App_Handler(QObject):
         self.comm_agent = CommAgent(self.comm_interface)
         self.comm_agent.start_command_processing()
 
+        
+        self.net_stat_cmnd_h = netstat_plot.NetStatStream(self.comm_agent, self.net_stat_plot_h)
+        self.net_stat_plot_timer = QTimer()
+        self.net_stat_plot_timer.timeout.connect(self.net_stat_cmnd_h.timer_callback)
+        self.net_stat_plot_timer.start(500)
+
+        self.task_info_h = task_table.KernelTask_TableHandler(self.comm_agent, self.net_stat_plot_h)
+        self.task_info_table_timer = QTimer()
+        self.task_info_table_timer.timeout.connect(self.task_info_h.timer_callback)
+        self.task_info_table_timer.start(500)
+
     def pb_disconnect_clicked(self):
         if self.comm_agent is not None:
             self.comm_agent.stop_command_processing()
             self.comm_interface.close_interface()
             self.comm_interface = None
             self.comm_agent = None
+
+            # Stop timers
+            self.net_stat_plot_timer.stop()
+            self.task_info_table_timer.stop()
+
 
     def pb_send_command_clicked(self):
         command = str(self.main_window.cli_stdin.text())
@@ -87,4 +100,3 @@ class PC_App_Handler(QObject):
 
     def pb_clear_cli_clicked(self):
         self.main_window.cli_stdout.clear()
-        

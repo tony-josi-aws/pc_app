@@ -23,20 +23,20 @@ class NetStatStream():
 
     def timer_callback(self):
 
-            data_stream = ''
-            try:
-                self.response_received.clear()
-                self.instant_resp_cmnd_handle.issue_command(self.default_netstat_rx_callback)
-                # Wait for the response.
-                self.response_received.wait()
-            except:
-                pass
+        try:
+            self.response_received.clear()
+            self.instant_resp_cmnd_handle.issue_command("netstat get", self.default_netstat_rx_callback)
+            # Wait for the response.
+            self.response_received.wait()
+        except:
+            pass
 
-            if data_stream == '':
-                return
+        if self.netstat_data == None:
+            return
 
-            self.plot_handle.update_plot_data(randrange(10))
-            self.plot_handle.update_plot_data(data_stream)
+        #self.plot_handle.update_plot_data(randrange(10))
+        self.plot_handle.update_plot_data(self.parse_net_stat_resp_str())
+        self.netstat_data = None
 
 
     def default_netstat_rx_callback(self, response):
@@ -61,7 +61,9 @@ class NetStatStream():
         logger.info("Start NetStatStream thread")
         self.start()
 
-
+    def parse_net_stat_resp_str(self):
+        # TODO: parse data
+        return self.netstat_data
 
 
 NETSTAT_PLOT_COLOR = '#0099ff'
