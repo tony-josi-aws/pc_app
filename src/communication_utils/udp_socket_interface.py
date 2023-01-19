@@ -8,7 +8,7 @@ class UDPSocket_CommInterface:
     def __init__(self, target_ip, target_port) -> None:
 
         self.target_ip = target_ip
-        self.target_port = target_port
+        self.target_port = int(target_port)
         self.udp_socket = None
         self.connect()
 

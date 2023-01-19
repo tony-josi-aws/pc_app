@@ -28,7 +28,7 @@ class UI_Cli(Cmd):
             self.comm_agent = CommAgent(self.comm_interface)
             self.comm_agent.start_command_processing()
         else:
-            self.do_close_connection("")
+            self.do_disconnect("")
             self.do_connect(target_ip, target_port)
 
     def numbers_to_strings(self, argument):
@@ -41,7 +41,7 @@ class UI_Cli(Cmd):
             5: " Tx Bytes Recv   : "
         }
         return switcher.get(argument, "nothing")
- 
+
     def print_header(self, count):
         if count == 0:
             var = "UDP "
@@ -51,13 +51,13 @@ class UI_Cli(Cmd):
             var = "ICMP "
         if count == 18:
             var = "Performance "
-        if count % 6 == 0 : 
+        if count % 6 == 0 :
             print("---------------------------------")
             print("   " + f"{var}"+"Network Statistic")
             print("----------------------------------")
 
-    def do_close_connection(self, cmnd):
-        'Close connection to the device. Syntax: close'
+    def do_disconnect(self, cmnd):
+        'Disconnect from the device. Syntax: disconnect'
         if self.comm_agent != None:
             self.comm_agent.stop_command_processing()
             self.comm_interface.close_interface()
@@ -67,11 +67,11 @@ class UI_Cli(Cmd):
     def do_exit(self, inp):
         'Exit this CLI. Syntax: exit'
         print("Exciting CLI...")
-        self.do_close_connection("")
+        self.do_disconnect("")
         return True
 
     def do_send(self, cmnd):
-        'Send a command to the device. Syntax: send'
+        'Send a command to the device. Syntax: send <command>'
         self.response_received.clear()
         self.comm_agent.issue_command(cmnd, self.select_callback_for_command(cmnd))
         # Wait for the response.
@@ -121,7 +121,7 @@ class UI_Cli(Cmd):
                 self.print_header(count)
                 if count == 18:
                     break;
-                print( self.numbers_to_strings(count%6) + i) 
+                print( self.numbers_to_strings(count%6) + i)
                 count+=1
 
             perf = stat[-2:]
