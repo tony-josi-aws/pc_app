@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QFileDialog, QWidget, QHeaderView
 from communication_utils.comm_agent import CommAgent
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 
-from ui import netstat_plot, task_table, pcap_handler
+from ui import netstat_plot, task_table, pcap_handler, trace_handler
 
 from utils.network_stats_deserializer import deserialize_network_stats
 from utils.kernel_stats_deserializer import deserialize_kernel_stats
@@ -49,6 +49,9 @@ class PC_App_Handler(QObject):
         self.main_window.pb_stop_pcap.clicked.connect(self.pb_stop_pcap_callback)
         self.main_window.pb_start_pcap.clicked.connect(self.pb_start_pcap_callback)
         self.main_window.pb_download_pcap.clicked.connect(self.pb_download_pcap_callback)
+        self.main_window.pb_stop_trace.clicked.connect(self.pb_stop_trace_callback)
+        self.main_window.pb_start_trace.clicked.connect(self.pb_start_trace_callback)
+        self.main_window.pb_download_trace.clicked.connect(self.pb_download_trace_callback)
 
         """ Make sure pressing enter key sends the command to device """
         self.main_window.cli_stdin.returnPressed.connect(self.pb_send_command_clicked)
@@ -77,6 +80,7 @@ class PC_App_Handler(QObject):
             self.task_info_table_timer.start(1000)
 
             self.pcap_h = pcap_handler.Pcap_Handler(self.comm_agent, self.main_window)
+            self.trace_h = trace_handler.Trace_Handler(self.comm_agent, self.main_window)
 
     def pb_disconnect_clicked(self):
         if self.comm_agent is not None:
@@ -151,9 +155,9 @@ class PC_App_Handler(QObject):
     def pb_download_pcap_clicked(self):
         file_path = self.get_write_filepath_for_pcap()
 
-    def get_write_filepath_for_pcap(self):
+    def get_write_filepath_for_pcap(self, file_type):
         pcap_file_path_dialog = QtWidgets.QFileDialog()
-        pcap_file_path = pcap_file_path_dialog.getSaveFileName(filter="All Files(*.pcap);;Text Files(*.pcap)")
+        pcap_file_path = pcap_file_path_dialog.getSaveFileName(filter="All Files({});;Text Files({})".format(file_type, file_type))
         pcap_file_path = pcap_file_path[0]
         return pcap_file_path
 
@@ -171,6 +175,9 @@ class PC_App_Handler(QObject):
         self.main_window.plot_netstat.setEnabled(False)
         self.main_window.cli_stdout.setEnabled(False)
         self.main_window.cli_stdin.setEnabled(False)
+        self.main_window.pb_stop_trace.setEnabled(False)
+        self.main_window.pb_start_trace.setEnabled(False)
+        self.main_window.pb_download_trace.setEnabled(False)
 
     def enable_buttons_after_connect(self):
         self.main_window.le_ip_addres.setEnabled(False)
@@ -186,6 +193,9 @@ class PC_App_Handler(QObject):
         self.main_window.plot_netstat.setEnabled(True)
         self.main_window.cli_stdout.setEnabled(True)
         self.main_window.cli_stdin.setEnabled(True)
+        self.main_window.pb_stop_trace.setEnabled(True)
+        self.main_window.pb_start_trace.setEnabled(True)
+        self.main_window.pb_download_trace.setEnabled(True)
 
     def pb_start_pcap_callback(self):
         self.pcap_h.send_pcap_start()
@@ -194,6 +204,17 @@ class PC_App_Handler(QObject):
         self.pcap_h.send_pcap_stop()
 
     def pb_download_pcap_callback(self):
-        f_path = self.get_write_filepath_for_pcap()
+        f_path = self.get_write_filepath_for_pcap("*.pcap")
         self.pcap_h.pcap_set_download_file_path(f_path)
         self.pcap_h.send_pcap_download()
+
+    def pb_stop_trace_callback(self):
+        self.trace_h.send_trace_stop()
+
+    def pb_start_trace_callback(self):
+        self.trace_h.send_trace_start()
+
+    def pb_download_trace_callback(self):
+        f_path = self.get_write_filepath_for_pcap("*.trace")
+        self.trace_h.trace_set_download_file_path(f_path)
+        self.trace_h.send_trace_download()

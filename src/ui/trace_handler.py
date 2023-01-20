@@ -26,7 +26,7 @@ class Trace_Handler(QtCore.QObject):
         logger.info("")
 
     def trace_command_completed_slot(self):
-        self.main_win_handle.l_trace_status.setText("{}: {}".format(self.info_prefix_cmnd, self.trace_data))
+        self.main_win_handle.l_trace.setText("{}: {}".format(self.info_prefix_cmnd, self.trace_data))
         self.info_prefix_cmnd = ""
         self.trace_data = ""        
 
@@ -35,11 +35,11 @@ class Trace_Handler(QtCore.QObject):
         self.comm_agent.issue_command("trace start", self.trace_start_stop_command_completed_callback)
 
     def send_trace_stop(self):
-        self.info_prefix_cmnd = "PCAP STOP"
+        self.info_prefix_cmnd = "TRACE STOP"
         self.comm_agent.issue_command("trace stop", self.trace_start_stop_command_completed_callback)
 
     def send_trace_download(self):
-        self.info_prefix_cmnd = "PCAP GET"
+        self.info_prefix_cmnd = "TRACE GET"
         self.comm_agent.issue_command("trace get", self.trace_download_command_completed_callback)
 
     # This callback runs in the comm agent thread's context and therefore, must
