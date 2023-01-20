@@ -56,15 +56,15 @@ class PC_App_Handler(QObject):
         if self.comm_agent != None:
             self.enable_buttons_after_connect()
 
-        self.net_stat_cmnd_h = netstat_plot.NetStatStream(self.comm_agent, self.net_stat_plot_h)
-        self.net_stat_plot_timer = QTimer()
-        self.net_stat_plot_timer.timeout.connect(self.net_stat_cmnd_h.timer_callback)
-        self.net_stat_plot_timer.start(1000)
+            self.net_stat_cmnd_h = netstat_plot.NetStatStream(self.comm_agent, self.net_stat_plot_h)
+            self.net_stat_plot_timer = QTimer()
+            self.net_stat_plot_timer.timeout.connect(self.net_stat_cmnd_h.timer_callback)
+            self.net_stat_plot_timer.start(1000)
 
-        self.task_info_h = task_table.KernelTask_TableHandler(self.comm_agent, self.main_window.tw_task_info)
-        self.task_info_table_timer = QTimer()
-        self.task_info_table_timer.timeout.connect(self.task_info_h.timer_callback)
-        self.task_info_table_timer.start(1000)
+            self.task_info_h = task_table.KernelTask_TableHandler(self.comm_agent, self.main_window.tw_task_info)
+            self.task_info_table_timer = QTimer()
+            self.task_info_table_timer.timeout.connect(self.task_info_h.timer_callback)
+            self.task_info_table_timer.start(1000)
 
     def pb_disconnect_clicked(self):
         if self.comm_agent is not None:
@@ -145,6 +145,8 @@ class PC_App_Handler(QObject):
         return pcap_file_path
 
     def disable_buttons_before_connect(self):
+        self.main_window.le_ip_addres.setEnabled(True)
+        self.main_window.le_port_num.setEnabled(True)
         self.main_window.pb_connect.setEnabled(True)
         self.main_window.pb_disconnect.setEnabled(False)
         self.main_window.pb_send_cmnd.setEnabled(False)
@@ -155,9 +157,11 @@ class PC_App_Handler(QObject):
         self.main_window.tw_task_info.setEnabled(False)
         self.main_window.plot_netstat.setEnabled(False)
         self.main_window.cli_stdout.setEnabled(False)
-        self.main_window.cli_stdin.setEnabled(False)     
+        self.main_window.cli_stdin.setEnabled(False)
 
     def enable_buttons_after_connect(self):
+        self.main_window.le_ip_addres.setEnabled(False)
+        self.main_window.le_port_num.setEnabled(False)
         self.main_window.pb_connect.setEnabled(False)
         self.main_window.pb_disconnect.setEnabled(True)
         self.main_window.pb_send_cmnd.setEnabled(True)
@@ -168,4 +172,4 @@ class PC_App_Handler(QObject):
         self.main_window.tw_task_info.setEnabled(True)
         self.main_window.plot_netstat.setEnabled(True)
         self.main_window.cli_stdout.setEnabled(True)
-        self.main_window.cli_stdin.setEnabled(True)    
+        self.main_window.cli_stdin.setEnabled(True)

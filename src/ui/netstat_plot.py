@@ -18,9 +18,9 @@ class NetStatStream(QtCore.QObject):
 
     netstat_command_completed_signal = QtCore.pyqtSignal()
 
-    def __init__(self, instant_resp_cmnd_handle, plot_handle) -> None:
+    def __init__(self, comm_agent, plot_handle) -> None:
         super(NetStatStream, self).__init__()
-        self.instant_resp_cmnd_handle = instant_resp_cmnd_handle
+        self.comm_agent = comm_agent
         self.response_received = threading.Event()
         self.plot_handle = plot_handle
         self.netstat_command_completed_signal.connect(self.netstat_command_completed_slot)
@@ -41,8 +41,7 @@ class NetStatStream(QtCore.QObject):
         if response is not None:
             try:
                 str_resp = response.decode(encoding = 'ascii')
-                deserialized_kernel_stats = network_stats_deserializer.deserialize_network_stats(response)
-                self.netstat_data = deserialized_kernel_stats.get_all_task_stats()
+                self.netstat_data = network_stats_deserializer.deserialize_network_stats(str_resp)
                 self.netstat_command_completed_signal.emit()
             except:
                 pass
@@ -80,8 +79,8 @@ class NetStat_MainWindowPlotter:
         self.netstat_plot_plot_item.getAxis('right').setPen(pg.mkPen(color=(NETSTAT_PLOT_COLOR_TX_LATENCY_CURVE), width=2))
         self.netstat_plot_plot_item.getAxis('bottom').setPen(pg.mkPen(color=(NETSTAT_PLOT_COLOR), width=2))
         self.netstat_plot_plot_item.setLabel('left', NETSTAT_PLOT_COLOR_LEFT_Y_AXIS_NAME, **NETSTAT_PLOT_LEFT_Y_AXIS_LABEL_STYLE)
-        self.netstat_plot_plot_item.setLabel('bottom', NETSTAT_PLOT_COLOR_BOTTOM_X_AXIS_NAME, **NETSTAT_PLOT_X_AXIS_LABEL_STYLE) 
-        self.netstat_plot_plot_item.setLabel('right', NETSTAT_PLOT_COLOR_RIGHT_Y_AXIS_NAME, **NETSTAT_PLOT_RIGHT_Y_AXIS_LABEL_STYLE) 
+        self.netstat_plot_plot_item.setLabel('bottom', NETSTAT_PLOT_COLOR_BOTTOM_X_AXIS_NAME, **NETSTAT_PLOT_X_AXIS_LABEL_STYLE)
+        self.netstat_plot_plot_item.setLabel('right', NETSTAT_PLOT_COLOR_RIGHT_Y_AXIS_NAME, **NETSTAT_PLOT_RIGHT_Y_AXIS_LABEL_STYLE)
 
         self.netstat_plot_plot_item.showGrid(x = True, y = True, alpha = 0.2)
 
@@ -127,9 +126,9 @@ class NetStat_MainWindowPlotter:
 
     def update_plot_data(self, tx, rx):
 
-        """ 
+        """
         Parse the stream data from the Stream_Data object and plot
-        it. 
+        it.
         """
         try:
             if not self.is_plot_paused:
