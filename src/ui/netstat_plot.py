@@ -32,8 +32,8 @@ class NetStatStream(QtCore.QObject):
 
     def netstat_command_completed_slot(self):
         if self.netstat_data != None:
-            rx = int(self.self.netstat_data.rx_latency)
-            tx = int(self.self.netstat_data.tx_latency)
+            rx = int(self.netstat_data.rx_latency)
+            tx = int(self.netstat_data.tx_latency)
             if rx != None and tx != None:
                 self.plot_handle.update_plot_data(rx, tx)
             else:
@@ -129,7 +129,7 @@ class NetStat_MainWindowPlotter:
             self.plot_y2_axis_data = self.plot_y2_axis_data[1:]
             self.append_stream_data_to_list(strm_data, strm_data2)
 
-    def update_plot_data(self, tx, rx):
+    def update_plot_data(self, rx, tx):
 
         """
         Parse the stream data from the Stream_Data object and plot
@@ -137,7 +137,7 @@ class NetStat_MainWindowPlotter:
         """
         try:
             if not self.is_plot_paused:
-                self.parse_curve_data(tx, rx)
+                self.parse_curve_data(rx, tx)
                 self.netstat_plot_curve_item_rx_latency.setData(self.plot_x_axis_data[:self.num_current_data_pts], \
                     self.plot_y_axis_data[:self.num_current_data_pts])
                 self.netstat_plot_curve_item_tx_latency.setData(self.plot_x_axis_data[:self.num_current_data_pts], \
