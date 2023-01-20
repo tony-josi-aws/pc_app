@@ -57,6 +57,8 @@ class UI_Cli(Cmd):
         callback = self.default_command_complete_callback
         if cmnd.strip().lower() == "pcap get":
             callback =self.pcap_get_command_complete_callback
+        if cmnd.strip().lower() == "trace get":
+            callback =self.trace_get_command_complete_callback
         if cmnd.strip().lower() == "netstat":
             callback =self.netstat_command_complete_callback
         if cmnd.strip().lower() == "top":
@@ -85,6 +87,21 @@ class UI_Cli(Cmd):
                 f.write(response)
 
             print(f"Generated PCAP dump file: {pcap_file_name}")
+        else:
+            print("Timed out while waiting for response!")
+        # Signal the do_send function to return.
+        self.response_received.set()
+
+    def trace_get_command_complete_callback(self, response):
+        if response is not None:
+            trace_file_name = str(hex(random.getrandbits(64)))
+            trace_file_name = trace_file_name[2:]
+            trace_file_name += ".trace"
+
+            with open(trace_file_name, 'wb') as f:
+                f.write(response)
+
+            print(f"Generated Trace dump file: {trace_file_name}")
         else:
             print("Timed out while waiting for response!")
         # Signal the do_send function to return.
