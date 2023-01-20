@@ -26,6 +26,7 @@ class PC_App_Handler(QObject):
 
         # Init plots widget
         self.net_stat_plot_h = netstat_plot.NetStat_MainWindowPlotter(self.main_window.plot_netstat)
+        self.disable_buttons_before_connect()
 
         # Connect available signals to the callbacks.
         self.connect_pyqt_main_window_signals()
@@ -49,10 +50,13 @@ class PC_App_Handler(QObject):
         self.comm_agent = CommAgent(self.comm_interface)
         self.comm_agent.start_command_processing()
 
+        if self.comm_agent != None:
+            self.enable_buttons_after_connect()
+
         self.net_stat_cmnd_h = netstat_plot.NetStatStream(self.comm_agent, self.net_stat_plot_h)
         self.net_stat_plot_timer = QTimer()
         self.net_stat_plot_timer.timeout.connect(self.net_stat_cmnd_h.timer_callback)
-        self.net_stat_plot_timer.start(500)
+        self.net_stat_plot_timer.start(1000)
 
         self.task_info_h = task_table.KernelTask_TableHandler(self.comm_agent, self.main_window.tw_task_info)
         self.task_info_table_timer = QTimer()
@@ -65,6 +69,7 @@ class PC_App_Handler(QObject):
             self.comm_interface.close_interface()
             self.comm_interface = None
             self.comm_agent = None
+            self.disable_buttons_before_connect()
 
             # Stop timers
             self.net_stat_plot_timer.stop()
@@ -127,3 +132,21 @@ class PC_App_Handler(QObject):
 
     def pb_clear_cli_clicked(self):
         self.main_window.cli_stdout.clear()
+
+    def disable_buttons_before_connect(self):
+        self.main_window.pb_connect.setEnabled(True)
+        self.main_window.pb_disconnect.setEnabled(False)
+        self.main_window.pb_send_cmnd.setEnabled(False)
+        self.main_window.pb_clear_cli.setEnabled(False)
+        self.main_window.pb_stop_pcap.setEnabled(False)
+        self.main_window.pb_start_pcap.setEnabled(False)
+        self.main_window.pb_download_pcap.setEnabled(False)
+
+    def enable_buttons_after_connect(self):
+        self.main_window.pb_connect.setEnabled(False)
+        self.main_window.pb_disconnect.setEnabled(True)
+        self.main_window.pb_send_cmnd.setEnabled(True)
+        self.main_window.pb_clear_cli.setEnabled(True)
+        self.main_window.pb_stop_pcap.setEnabled(True)
+        self.main_window.pb_start_pcap.setEnabled(True)
+        self.main_window.pb_download_pcap.setEnabled(True)

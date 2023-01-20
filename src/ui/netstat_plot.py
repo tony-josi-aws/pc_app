@@ -19,6 +19,7 @@ class NetStatStream(QtCore.QObject):
     netstat_command_completed_signal = QtCore.pyqtSignal()
 
     def __init__(self, instant_resp_cmnd_handle, plot_handle) -> None:
+        super(NetStatStream, self).__init__()
         self.instant_resp_cmnd_handle = instant_resp_cmnd_handle
         self.response_received = threading.Event()
         self.plot_handle = plot_handle
@@ -82,7 +83,7 @@ class NetStat_MainWindowPlotter:
         self.netstat_plot_plot_item.setLabel('bottom', NETSTAT_PLOT_COLOR_BOTTOM_X_AXIS_NAME, **NETSTAT_PLOT_X_AXIS_LABEL_STYLE) 
         self.netstat_plot_plot_item.setLabel('right', NETSTAT_PLOT_COLOR_RIGHT_Y_AXIS_NAME, **NETSTAT_PLOT_RIGHT_Y_AXIS_LABEL_STYLE) 
 
-        self.netstat_plot_plot_item.showGrid(x = True, y = True, alpha = 0.1)
+        self.netstat_plot_plot_item.showGrid(x = True, y = True, alpha = 0.2)
 
         """ Create two curves and add it to the plotWidget """
         self.netstat_plot_curve_item_rx_latency = pg.PlotCurveItem(pen=({'color': NETSTAT_PLOT_COLOR_RX_LATENCY_CURVE, 'width': 2}), skipFiniteCheck=True)
