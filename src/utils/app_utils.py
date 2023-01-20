@@ -33,6 +33,9 @@ class ResponseDecoder(object):
     def is_packet_complete(self):
         return self.packet_complete
 
+    def is_packet_valid(self):
+        return self.valid_packet
+
     def get_decoded_response(self):
         if not self.valid_packet:
             util_lib_logger.critical(f"Invalid response!")

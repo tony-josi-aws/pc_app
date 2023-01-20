@@ -11,6 +11,7 @@ class UDPSocket_CommInterface:
         self.target_port = int(target_port)
         self.udp_socket = None
         self.connect()
+        self.set_timeout(2)
 
     def connect(self):
         try:

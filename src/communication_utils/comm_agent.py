@@ -54,13 +54,16 @@ class CommAgent(object):
                 #Start receiving the response.
                 while response_decoder.is_packet_complete() == False:
                     raw_response = self.comm_interface.recv()
-                    if len(raw_response) > 0:
+                    if raw_response is not None and len(raw_response) > 0:
                         response_decoder.decode_response(raw_response)
                     else:
                         comm_agent_logger.error(f"Failed to receive response!")
                         break
 
-                decoded_response = response_decoder.get_decoded_response()
+                if response_decoder.is_packet_complete() == True and response_decoder.is_packet_valid() == True:
+                    decoded_response = response_decoder.get_decoded_response()
+                else:
+                    decoded_response = None
                 callback = cmd_request.get_callback()
                 callback(decoded_response)
             else:
