@@ -32,7 +32,12 @@ class NetStatStream(QtCore.QObject):
 
     def netstat_command_completed_slot(self):
         if self.netstat_data != None:
-            self.plot_handle.update_plot_data(self.netstat_data.rx_latency, self.netstat_data.tx_latency)
+            rx = int(self.self.netstat_data.rx_latency)
+            tx = int(self.self.netstat_data.tx_latency)
+            if rx != None and tx != None:
+                self.plot_handle.update_plot_data(rx, tx)
+            else:
+                self.plot_handle.update_plot_data(0, 0)
             self.netstat_data = None
 
     # This callback runs in the comm agent thread's context and therefore, must
