@@ -7,8 +7,8 @@ from utils.network_stats_deserializer import deserialize_network_stats
 from utils.kernel_stats_deserializer import deserialize_kernel_stats
 
 class UI_Cli(Cmd):
-    intro = "Welcome to the FreeRTOS Inspector shell! Type ? to list commands."
-    prompt = '(FreeRTOS Inspector) '
+    intro = "Welcome to the X-Ray For FreeRTOS shell! Type ? to list commands."
+    prompt = '(X-Ray For FreeRTOS) '
 
     def __init__(self) -> None:
         super(UI_Cli, self).__init__()

@@ -50,6 +50,9 @@ class PC_App_Handler(QObject):
         self.main_window.pb_start_pcap.clicked.connect(self.pb_start_pcap_callback)
         self.main_window.pb_download_pcap.clicked.connect(self.pb_download_pcap_callback)
 
+        """ Make sure pressing enter key sends the command to device """
+        self.main_window.cli_stdin.returnPressed.connect(self.pb_send_command_clicked)
+
     def connect_local_signals(self):
         self.command_completed_signal.connect(self.command_completed_slot)
 
