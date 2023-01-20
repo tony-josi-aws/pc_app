@@ -31,7 +31,7 @@ class Pcap_Handler(QtCore.QObject):
         self.pcap_data = ""        
 
     def send_pcap_start(self):
-        self.info_prefix_cmnd = "PCAP SEND"
+        self.info_prefix_cmnd = "PCAP START"
         self.comm_agent.issue_command("pcap start", self.pcap_start_stop_command_completed_callback)
 
     def send_pcap_stop(self):
