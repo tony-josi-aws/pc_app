@@ -1,14 +1,16 @@
+import secrets
 import logging
 from collections import defaultdict
 
 util_lib_logger = logging.getLogger(__name__)
 
-PACKET_HEADER_SIZE      = 4
+PACKET_HEADER_SIZE      = 8
 PACKET_START_MARKER     = 0x55
 
 
 class ResponseDecoder(object):
-    def __init__(self) -> None:
+    def __init__(self, request_id) -> None:
+        self.request_id = request_id
         self.header_received = False
         self.unconsumed_response = bytearray()
         self.remaining_chunk_length = None
@@ -22,7 +24,7 @@ class ResponseDecoder(object):
 
         while len(self.unconsumed_response) > 0 and ( self.packet_complete == False ) and ( self.valid_packet == True ):
             if not self.header_received:
-                if len(self.unconsumed_response) >= 4:
+                if len(self.unconsumed_response) >= PACKET_HEADER_SIZE:
                     self.decode_header()
                 else:
                     # Not enough bytes yet for a header.
@@ -64,8 +66,14 @@ class ResponseDecoder(object):
         start_marker = self.unconsumed_response[0]
         chunk_number = self.unconsumed_response[1]
         chunk_length = (self.unconsumed_response[2] << 8) | (self.unconsumed_response[3] & 0xFF)
+        request_id = self.unconsumed_response[4:8]
 
         if start_marker != PACKET_START_MARKER:
+            self.valid_packet = False
+            self.packet_complete = True
+            return
+
+        if request_id != self.request_id:
             self.valid_packet = False
             self.packet_complete = True
             return
@@ -75,7 +83,7 @@ class ResponseDecoder(object):
             self.packet_complete = True
             return
 
-        self.unconsumed_response = self.unconsumed_response[4:]
+        self.unconsumed_response = self.unconsumed_response[8:]
         self.remaining_chunk_length = chunk_length
         self.cur_chunk_number = chunk_number
 
@@ -102,7 +110,7 @@ class RequestEncoder(object):
             command = command.encode('ascii')
         except Exception as e:
             util_lib_logger.critical(f"Cant encode command: {e}")
-            return None
+            return None, None
 
         command_len = len(command)
         total_len = command_len + PACKET_HEADER_SIZE
@@ -114,7 +122,12 @@ class RequestEncoder(object):
         # network byte order.
         encoded_command[2] = command_len >> 8
         encoded_command[3] = command_len & 0xFF
-        # Actual command comes after that.
-        encoded_command[4:] = bytearray(command)
 
-        return encoded_command
+        # Next 4 bytes are request id.
+        request_id = secrets.token_bytes(4)
+        encoded_command[4:] = request_id
+
+        # Actual command comes after that.
+        encoded_command[8:] = bytearray(command)
+
+        return encoded_command, request_id

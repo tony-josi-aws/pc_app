@@ -44,26 +44,30 @@ class CommAgent(object):
 
             cmd_request = self.commands_queue.get()
             request_encoder = app_utils.RequestEncoder()
-            encoded_request = request_encoder.encode_command(cmd_request.get_command())
+            encoded_request, request_id = request_encoder.encode_command(cmd_request.get_command())
 
             if encoded_request is not None:
                 self.comm_interface.send(encoded_request)
 
-                response_decoder = app_utils.ResponseDecoder()
+                decoded_response = None
 
-                #Start receiving the response.
-                while response_decoder.is_packet_complete() == False:
-                    raw_response = self.comm_interface.recv()
-                    if raw_response is not None and len(raw_response) > 0:
-                        response_decoder.decode_response(raw_response)
-                    else:
-                        comm_agent_logger.error(f"Failed to receive response!")
+                # Make 3 attempts to get a valid response.
+                for i in range(3):
+                    response_decoder = app_utils.ResponseDecoder(request_id)
+
+                    # Start receiving the response.
+                    while response_decoder.is_packet_complete() == False:
+                        raw_response = self.comm_interface.recv()
+                        if raw_response is not None and len(raw_response) > 0:
+                            response_decoder.decode_response(raw_response)
+                        else:
+                            comm_agent_logger.error(f"Failed to receive response!")
+                            break
+
+                    if response_decoder.is_packet_complete() == True and response_decoder.is_packet_valid() == True:
+                        decoded_response = response_decoder.get_decoded_response()
                         break
 
-                if response_decoder.is_packet_complete() == True and response_decoder.is_packet_valid() == True:
-                    decoded_response = response_decoder.get_decoded_response()
-                else:
-                    decoded_response = None
                 callback = cmd_request.get_callback()
                 callback(decoded_response)
             else:
