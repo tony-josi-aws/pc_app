@@ -385,19 +385,19 @@
                 </font>
                </property>
                <property name="text">
-                <string>PCAP:</string>
+                <string>PCAP STATUS:</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label">
+              <widget class="QLabel" name="l_pcap_status">
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
                 </font>
                </property>
                <property name="text">
-                <string>PCAP INFO:</string>
+                <string/>
                </property>
               </widget>
              </item>

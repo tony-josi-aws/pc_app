@@ -5,16 +5,15 @@ import threading
 
 from PyQt5.QtCore import QObject, QTimer
 from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import QFileDialog, QWidget
 
 from communication_utils.comm_agent import CommAgent
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 
-from ui import netstat_plot, task_table
+from ui import netstat_plot, task_table, pcap_handler
 
 from utils.network_stats_deserializer import deserialize_network_stats
 from utils.kernel_stats_deserializer import deserialize_kernel_stats
-
-
 class PC_App_Handler(QObject):
     command_completed_signal = QtCore.pyqtSignal(object)
 
@@ -34,14 +33,15 @@ class PC_App_Handler(QObject):
         # Connect this handler's signals to the slots.
         self.connect_local_signals()
 
-        self.pcap_file_path_dialog = QtWidgets.QFileDialog()
-
     def connect_pyqt_main_window_signals(self):
         self.main_window.pb_connect.clicked.connect(self.pb_connect_clicked)
         self.main_window.pb_disconnect.clicked.connect(self.pb_disconnect_clicked)
         self.main_window.pb_send_cmnd.clicked.connect(self.pb_send_command_clicked)
         self.main_window.pb_clear_cli.clicked.connect(self.pb_clear_cli_clicked)
         self.main_window.pb_download_pcap.clicked.connect(self.pb_download_pcap_clicked)
+        self.main_window.pb_stop_pcap.clicked.connect(self.pb_stop_pcap_callback)
+        self.main_window.pb_start_pcap.clicked.connect(self.pb_start_pcap_callback)
+        self.main_window.pb_download_pcap.clicked.connect(self.get_write_filepath_for_pcap)
 
     def connect_local_signals(self):
         self.command_completed_signal.connect(self.command_completed_slot)
@@ -66,6 +66,8 @@ class PC_App_Handler(QObject):
             self.task_info_table_timer.timeout.connect(self.task_info_h.timer_callback)
             self.task_info_table_timer.start(1000)
 
+            self.pcap_h = pcap_handler.Pcap_Handler(self.comm_agent, self.main_window)
+
     def pb_disconnect_clicked(self):
         if self.comm_agent is not None:
             self.comm_agent.stop_command_processing()
@@ -87,7 +89,7 @@ class PC_App_Handler(QObject):
             elif command == "netstat":
                 self.comm_agent.issue_command(command, self.netstat_command_completed_callback)
             else:
-                self.comm_agent.issue_command(command, self.command_completed_callback)
+                self.comm_agent.issue_command(command, self.get_write_filepath_for_pcap)
 
     def command_completed_slot(self, str_resp):
         self.main_window.cli_stdout.append(str_resp)
@@ -140,7 +142,11 @@ class PC_App_Handler(QObject):
         file_path = self.get_write_filepath_for_pcap()
 
     def get_write_filepath_for_pcap(self):
-        pcap_file_path = self.pcap_file_path_dialog.getSaveFileName(filter="All Files(*.pcap);;Text Files(*.pcap)")
+        pcap_file_path_dialog = QtWidgets.QFileDialog()
+        # fileDialog = OpenFileDialog.FileDialog()
+        # fileDialog = FileDialog()
+        # fileName = fileDialog.openFileNameDialog()
+        pcap_file_path = pcap_file_path_dialog.getOpenFileName()
         pcap_file_path = pcap_file_path[0]
         return pcap_file_path
 
@@ -173,3 +179,14 @@ class PC_App_Handler(QObject):
         self.main_window.plot_netstat.setEnabled(True)
         self.main_window.cli_stdout.setEnabled(True)
         self.main_window.cli_stdin.setEnabled(True)
+
+    def pb_start_pcap_callback(self):
+        self.pcap_h.send_pcap_start()
+
+    def pb_stop_pcap_callback(self):
+        self.pcap_h.send_pcap_stop()
+
+    def pb_download_pcap_callback(self):
+        f_path = self.get_write_filepath_for_pcap()
+        self.pcap_h.pcap_set_download_file_path(f_path)
+        self.pcap_h.send_pcap_download()
