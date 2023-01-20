@@ -52,10 +52,13 @@ NETSTAT_PLOT_COLOR_RX_LATENCY_CURVE = '#0094d1'
 NETSTAT_PLOT_COLOR_TX_LATENCY_CURVE = '#8b1ec9'
 NETSTAT_PLOT_AXIS_LABEL_COLOR = '#000000'
 NETSTAT_PLOT_AXIS_LABEL_FONT_SIZE = "10pt"
-NETSTAT_PLOT_COLOR_LEFT_Y_AXIS_NAME =  "Latency (ms)"
+NETSTAT_PLOT_COLOR_LEFT_Y_AXIS_NAME =  "TX Latency (ms)"
+NETSTAT_PLOT_COLOR_RIGHT_Y_AXIS_NAME =  "RX Latency (ms)"
 DEFAULT_MAX_NETSTAT_PLOT_REAL_TIME_DATA = 40
 NETSTAT_PLOT_COLOR_BOTTOM_X_AXIS_NAME =  "Time"
-NETSTAT_PLOT_AXIS_LABEL_STYLE = {"label": "COLUMN 1", "color": (NETSTAT_PLOT_AXIS_LABEL_COLOR), "font-size": NETSTAT_PLOT_AXIS_LABEL_FONT_SIZE}
+NETSTAT_PLOT_X_AXIS_LABEL_STYLE = {"label": "COLUMN 1", "color": (NETSTAT_PLOT_AXIS_LABEL_COLOR), "font-size": NETSTAT_PLOT_AXIS_LABEL_FONT_SIZE}
+NETSTAT_PLOT_LEFT_Y_AXIS_LABEL_STYLE = {"label": "COLUMN 1", "color": (NETSTAT_PLOT_COLOR_RX_LATENCY_CURVE), "font-size": NETSTAT_PLOT_AXIS_LABEL_FONT_SIZE}
+NETSTAT_PLOT_RIGHT_Y_AXIS_LABEL_STYLE = {"color": (NETSTAT_PLOT_COLOR_TX_LATENCY_CURVE), "font-size": NETSTAT_PLOT_AXIS_LABEL_FONT_SIZE}
 NETSTAT_PLOT_PERCENT_INDEX = 0
 
 class NetStat_MainWindowPlotter:
@@ -75,8 +78,9 @@ class NetStat_MainWindowPlotter:
         self.netstat_plot_plot_item.getAxis('left').setPen(pg.mkPen(color=(NETSTAT_PLOT_COLOR_RX_LATENCY_CURVE), width=2))
         self.netstat_plot_plot_item.getAxis('right').setPen(pg.mkPen(color=(NETSTAT_PLOT_COLOR_TX_LATENCY_CURVE), width=2))
         self.netstat_plot_plot_item.getAxis('bottom').setPen(pg.mkPen(color=(NETSTAT_PLOT_COLOR), width=2))
-        self.netstat_plot_plot_item.setLabel('left', NETSTAT_PLOT_COLOR_LEFT_Y_AXIS_NAME, **NETSTAT_PLOT_AXIS_LABEL_STYLE)
-        self.netstat_plot_plot_item.setLabel('bottom', NETSTAT_PLOT_COLOR_BOTTOM_X_AXIS_NAME, **NETSTAT_PLOT_AXIS_LABEL_STYLE) 
+        self.netstat_plot_plot_item.setLabel('left', NETSTAT_PLOT_COLOR_LEFT_Y_AXIS_NAME, **NETSTAT_PLOT_LEFT_Y_AXIS_LABEL_STYLE)
+        self.netstat_plot_plot_item.setLabel('bottom', NETSTAT_PLOT_COLOR_BOTTOM_X_AXIS_NAME, **NETSTAT_PLOT_X_AXIS_LABEL_STYLE) 
+        self.netstat_plot_plot_item.setLabel('right', NETSTAT_PLOT_COLOR_RIGHT_Y_AXIS_NAME, **NETSTAT_PLOT_RIGHT_Y_AXIS_LABEL_STYLE) 
 
         self.netstat_plot_plot_item.showGrid(x = True, y = True, alpha = 0.1)
 
