@@ -44,8 +44,8 @@ class NetworkStats(object):
             [ "ICMP: Tx Packets Dropped",   self.icmp_packet_drop_tx ],
             [ "ICMP: Bytes Received",       self.icmp_bytes_rx ],
             [ "ICMP: Bytes Sent",           self.icmp_bytes_tx ],
-            [ "Rx Latency",                 self.rx_latency ],
-            [ "Tx Latency",                 self.tx_latency ],
+            [ "Rx Latency",                 str(self.rx_latency) ],
+            [ "Tx Latency",                 str(self.tx_latency) ],
         ]
         return tabulate(table_rows, headers=table_header, tablefmt=fmt)
 
@@ -60,7 +60,7 @@ def deserialize_network_stats(network_stats_str):
     deserialized_stats = NetworkStats()
     all_stats = network_stats_str.split(',')
 
-    if len(all_stats) == 20:
+    if len(all_stats) == 22:
         deserialized_stats.udp_packet_rx = all_stats[0]
         deserialized_stats.udp_packet_tx = all_stats[1]
         deserialized_stats.udp_packet_drop_rx = all_stats[2]
@@ -79,7 +79,8 @@ def deserialize_network_stats(network_stats_str):
         deserialized_stats.icmp_packet_drop_tx = all_stats[15]
         deserialized_stats.icmp_bytes_rx = all_stats[16]
         deserialized_stats.icmp_bytes_tx = all_stats[17]
-        deserialized_stats.rx_latency = all_stats[18]
-        deserialized_stats.tx_latency = all_stats[19]
-
+        deserialized_stats.rx_latency = ( int(all_stats[18]) << 32 ) | ( int(all_stats[19]) )
+        deserialized_stats.tx_latency = ( int(all_stats[20]) << 32 ) | ( int(all_stats[21]) )
+        deserialized_stats.rx_latency = float(deserialized_stats.rx_latency) / float(100)
+        deserialized_stats.tx_latency = float(deserialized_stats.tx_latency) / float(100)
     return deserialized_stats
