@@ -34,11 +34,14 @@ class PC_App_Handler(QObject):
         # Connect this handler's signals to the slots.
         self.connect_local_signals()
 
+        self.pcap_file_path_dialog = QtWidgets.QFileDialog()
+
     def connect_pyqt_main_window_signals(self):
         self.main_window.pb_connect.clicked.connect(self.pb_connect_clicked)
         self.main_window.pb_disconnect.clicked.connect(self.pb_disconnect_clicked)
         self.main_window.pb_send_cmnd.clicked.connect(self.pb_send_command_clicked)
         self.main_window.pb_clear_cli.clicked.connect(self.pb_clear_cli_clicked)
+        self.main_window.pb_download_pcap.clicked.connect(self.pb_download_pcap_clicked)
 
     def connect_local_signals(self):
         self.command_completed_signal.connect(self.command_completed_slot)
@@ -133,6 +136,14 @@ class PC_App_Handler(QObject):
     def pb_clear_cli_clicked(self):
         self.main_window.cli_stdout.clear()
 
+    def pb_download_pcap_clicked(self):
+        file_path = self.get_write_filepath_for_pcap()
+
+    def get_write_filepath_for_pcap(self):
+        pcap_file_path = self.pcap_file_path_dialog.getSaveFileName(filter="All Files(*.pcap);;Text Files(*.pcap)")
+        pcap_file_path = pcap_file_path[0]
+        return pcap_file_path
+
     def disable_buttons_before_connect(self):
         self.main_window.pb_connect.setEnabled(True)
         self.main_window.pb_disconnect.setEnabled(False)
@@ -141,6 +152,10 @@ class PC_App_Handler(QObject):
         self.main_window.pb_stop_pcap.setEnabled(False)
         self.main_window.pb_start_pcap.setEnabled(False)
         self.main_window.pb_download_pcap.setEnabled(False)
+        self.main_window.tw_task_info.setEnabled(False)
+        self.main_window.plot_netstat.setEnabled(False)
+        self.main_window.cli_stdout.setEnabled(False)
+        self.main_window.cli_stdin.setEnabled(False)     
 
     def enable_buttons_after_connect(self):
         self.main_window.pb_connect.setEnabled(False)
@@ -150,3 +165,7 @@ class PC_App_Handler(QObject):
         self.main_window.pb_stop_pcap.setEnabled(True)
         self.main_window.pb_start_pcap.setEnabled(True)
         self.main_window.pb_download_pcap.setEnabled(True)
+        self.main_window.tw_task_info.setEnabled(True)
+        self.main_window.plot_netstat.setEnabled(True)
+        self.main_window.cli_stdout.setEnabled(True)
+        self.main_window.cli_stdin.setEnabled(True)    
