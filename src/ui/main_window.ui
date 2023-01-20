@@ -158,7 +158,7 @@
          <property name="minimumSize">
           <size>
            <width>440</width>
-           <height>320</height>
+           <height>380</height>
           </size>
          </property>
          <property name="autoFillBackground">

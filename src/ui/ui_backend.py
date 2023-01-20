@@ -5,7 +5,7 @@ import threading
 
 from PyQt5.QtCore import QObject, QTimer
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QFileDialog, QWidget
+from PyQt5.QtWidgets import QFileDialog, QWidget, QHeaderView
 
 from communication_utils.comm_agent import CommAgent
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
@@ -22,6 +22,14 @@ class PC_App_Handler(QObject):
         self.main_window = main_window_h
         self.comm_interface = None
         self.comm_agent = None
+
+        header = self.main_window.tw_task_info.horizontalHeader()       
+        for i in range(self.main_window.tw_task_info.columnCount()):   
+            header.setSectionResizeMode(i, QHeaderView.Stretch)
+        header = self.main_window.tw_task_info.verticalHeader()    
+        for i in range(self.main_window.tw_task_info.rowCount()):   
+            header.setSectionResizeMode(i, QHeaderView.Stretch)
+
 
         # Init plots widget
         self.net_stat_plot_h = netstat_plot.NetStat_MainWindowPlotter(self.main_window.plot_netstat)
