@@ -52,6 +52,11 @@ class ResponseDecoder(object):
         for chunk in chunk_numbers:
             resp += self.chunks[chunk]
 
+        # If the actual packet got lost and we only got
+        # end marker.
+        if len(resp) == 0:
+            resp = None
+
         return resp
 
 
