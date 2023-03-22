@@ -28,7 +28,7 @@ class TCPSocket_CommInterface:
                     break
             return rx_data
         except Exception as e:
-            tcp_sock_logger.critical(f"TCP get_rx failed : {e}.", exc_info=True)
+            tcp_sock_logger.info(f"TCP get_rx failed : {e}.", exc_info=True)
 
     def send(self, data_bytes):
         try:

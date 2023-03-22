@@ -78,7 +78,7 @@ class PC_App_Handler(QObject):
             self.task_info_h = task_table.KernelTask_TableHandler(self.comm_agent, self.main_window.tw_task_info)
             self.task_info_table_timer = QTimer()
             self.task_info_table_timer.timeout.connect(self.task_info_h.timer_callback)
-            self.task_info_table_timer.start(1000)
+            self.task_info_table_timer.start(300)
 
             self.pcap_h = pcap_handler.Pcap_Handler(self.comm_agent, self.main_window)
             self.trace_h = trace_handler.Trace_Handler(self.comm_agent, self.main_window)
