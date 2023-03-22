@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QFileDialog, QWidget, QHeaderView
 
 from communication_utils.comm_agent import CommAgent
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
+from communication_utils.tcp_socket_interface import TCPSocket_CommInterface
 
 from ui import netstat_plot, task_table, pcap_handler, trace_handler
 
@@ -62,7 +63,7 @@ class PC_App_Handler(QObject):
     def pb_connect_clicked(self):
         device_ip = str(self.main_window.le_ip_addres.text())
         device_port = str(self.main_window.le_port_num.text())
-        self.comm_interface = UDPSocket_CommInterface(device_ip, device_port)
+        self.comm_interface = TCPSocket_CommInterface(device_ip, device_port)
         self.comm_agent = CommAgent(self.comm_interface)
         self.comm_agent.start_command_processing()
 

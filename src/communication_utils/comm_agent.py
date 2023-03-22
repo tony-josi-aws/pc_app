@@ -58,6 +58,7 @@ class CommAgent(object):
                     # Start receiving the response.
                     while response_decoder.is_packet_complete() == False:
                         raw_response = self.comm_interface.recv()
+                        comm_agent_logger.info(f"RX data TCP process_commands:  {str(raw_response)}")
                         if raw_response is not None and len(raw_response) > 0:
                             response_decoder.decode_response(raw_response)
                         else:
