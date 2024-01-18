@@ -61,18 +61,18 @@ class UI_Cli(Cmd):
             print('\nThe following sub-commands are available:\n')
             print('1. start - Start capturing execution traces on the device. Syntax: trace start')
             print('2. stop - Stop capturing execution traces on the device. Syntax: trace stop')
-            print('3. get - Get execution traces fom the device. Syntax: trace get\n')
+            print('3. get - Get execution traces fom the device. Syntax: trace get <output_file>\n')
 
         if cmd == 'pcap':
             print('\nThe following sub-commands are available:\n')
             print('1. start - Start capturing network traffic on the device. Syntax: pcap start')
             print('2. stop - Stop capturing network traffic on the device. Syntax: pcap stop')
-            print('3. get - Get captured network traffic traces fom the device. Syntax: pcap get\n')
+            print('3. get - Get captured network traffic traces fom the device. Syntax: pcap get <output_file>\n')
 
         if cmd == 'coredump':
             print('\nThe following sub-commands are available:\n')
             print('1. check - Check if a coredump exists on the device. Syntax: coredump check')
-            print('2. get - Get coredump from the device. Syntax: coredump get\n')
+            print('2. get - Get coredump from the device. Syntax: coredump get <output_file>\n')
 
         if cmd == 'exit':
             print('\nExit from the CLI.')
@@ -114,9 +114,23 @@ class UI_Cli(Cmd):
         'Send a command to the device. Syntax: send <command>'
         self.response_received.clear()
         if self.comm_agent != None:
-            self.comm_agent.issue_command(cmnd, self.select_callback_for_command(cmnd))
-            # Wait for the response.
-            self.response_received.wait()
+            if "pcap get" in cmnd.strip().lower() or \
+               "trace get" in cmnd.strip().lower() or \
+               "coredump get" in cmnd.strip().lower():
+                cmnd_words = cmnd.split()
+                if len(cmnd_words) != 3:
+                    print('Invalid command syntax!')
+                else:
+                    file_path = cmnd_words[2]
+                    device_command = " ".join(cmnd_words[:2])
+
+                    self.comm_agent.issue_command(device_command, self.select_callback_for_command(device_command), file_path)
+                    # Wait for the response.
+                    self.response_received.wait()
+            else:
+                self.comm_agent.issue_command(cmnd, self.select_callback_for_command(cmnd))
+                # Wait for the response.
+                self.response_received.wait()
         else:
             print('Connect to a device first!')
 
@@ -155,49 +169,47 @@ class UI_Cli(Cmd):
         # Signal the do_send function to return.
         self.response_received.set()
 
-    def pcap_get_command_complete_callback(self, response):
+    def pcap_get_command_complete_callback(self, response, output_file):
         if response is not None:
-            pcap_file_name = str(hex(random.getrandbits(64)))
-            pcap_file_name = pcap_file_name[2:]
-            pcap_file_name += ".pcap"
+            if not output_file.endswith('.pcap'):
+                output_file += ".pcap"
 
-            with open(pcap_file_name, 'wb') as f:
+            with open(output_file, 'wb') as f:
                 f.write(response)
 
-            print(f"Generated PCAP dump file: {pcap_file_name}")
+            print(f"Generated PCAP dump file: {output_file}")
         else:
             print("Timed out while waiting for response!")
         # Signal the do_send function to return.
         self.response_received.set()
 
-    def coredump_get_command_complete_callback(self, response):
+    def coredump_get_command_complete_callback(self, response, output_file):
         if response is not None:
-            dump_file_name = str(hex(random.getrandbits(64)))
-            dump_file_name = dump_file_name[2:]
-            dump_file_name += ".dump"
+            if not output_file.endswith('.dump'):
+                output_file += ".dump"
 
-            with open(dump_file_name, 'wb') as f:
+            temp_output_file = output_file + ".tmp"
+            with open(temp_output_file, 'wb') as f:
                 f.write(response)
 
             parser = core_dump_parser()
-            parsed_file_path = parser.parse_core_dump( dump_file_name, None )
+            parser.parse_core_dump(temp_output_file, output_file)
 
-            print(f"Generated coredump file: {parsed_file_path}")
+            print(f"Generated coredump file: {output_file}")
         else:
             print("Timed out while waiting for response!")
         # Signal the do_send function to return.
         self.response_received.set()
 
-    def trace_get_command_complete_callback(self, response):
+    def trace_get_command_complete_callback(self, response, output_file):
         if response is not None:
-            trace_file_name = str(hex(random.getrandbits(64)))
-            trace_file_name = trace_file_name[2:]
-            trace_file_name += ".trace"
+            if not output_file.endswith('.tdi'):
+                output_file += ".tdi"
 
-            with open(trace_file_name, 'wb') as f:
+            with open(output_file, 'wb') as f:
                 f.write(response)
 
-            print(f"Generated Trace dump file: {trace_file_name}")
+            print(f"Generated Trace dump file: {output_file}")
         else:
             print("Timed out while waiting for response!")
         # Signal the do_send function to return.

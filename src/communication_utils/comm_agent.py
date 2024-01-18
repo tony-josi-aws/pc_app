@@ -7,15 +7,19 @@ comm_agent_logger = logging.getLogger(__name__)
 
 
 class CommandRequest(object):
-    def __init__(self, command, callback) -> None:
+    def __init__(self, command, callback, callback_data=None) -> None:
         self.command = command
         self.callback = callback
+        self.callback_data = callback_data
 
     def get_command(self):
         return self.command
 
-    def get_callback(self):
-        return self.callback
+    def invoke_callback(self, response):
+        if self.callback_data is None:
+            self.callback(response)
+        else:
+            self.callback(response, self.callback_data)
 
 
 class CommAgent(object):
@@ -24,8 +28,8 @@ class CommAgent(object):
         self.commands_queue = Queue()
         self.kill_command_processing_thread = threading.Event()
 
-    def issue_command(self, command, callback):
-        cmd_request = CommandRequest(command, callback)
+    def issue_command(self, command, callback, callback_data=None):
+        cmd_request = CommandRequest(command, callback, callback_data)
         self.commands_queue.put(cmd_request)
 
     def start_command_processing(self):
@@ -68,7 +72,6 @@ class CommAgent(object):
                         decoded_response = response_decoder.get_decoded_response()
                         break
 
-                callback = cmd_request.get_callback()
-                callback(decoded_response)
+                cmd_request.invoke_callback(decoded_response)
             else:
                 comm_agent_logger.error(f"Failed to encode request: {cmd_request}")
