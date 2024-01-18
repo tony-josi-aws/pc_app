@@ -13,7 +13,7 @@ class AppDialogBox():
      
         dialog.setText(message)
         dialog.setWindowTitle(title)
-        dialog.setStyleSheet("QLabel{height: 100px; min-height: 100px; max-height: 100px;min-width: 500px; }")
+        #dialog.setStyleSheet("QLabel{height: 100px; min-height: 100px; max-height: 100px;min-width: 500px; }")
 
         # Show the dialog as a modal dialog (blocks the main window)
         dialog.exec_()

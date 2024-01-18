@@ -5,6 +5,9 @@ import logging
 import ui.resources.icons
 from ui.main_window import Ui_MainWindow
 from ui.ui_backend import PC_App_Handler
+
+import qdarktheme
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
@@ -33,8 +36,10 @@ class PC_APP(QMainWindow):
         self.app_handle = PC_App_Handler(self)
 
 if __name__ == "__main__":
-
+    qdarktheme.enable_hi_dpi()
     app = QApplication(sys.argv)
+    qdarktheme.setup_theme()
+    app.setStyle('QtCurve')
     w = PC_APP()
     w.show()
     app.exec()

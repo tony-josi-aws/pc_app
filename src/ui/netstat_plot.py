@@ -79,6 +79,8 @@ class NetStat_MainWindowPlotter:
         self.netstat_plot_plot_widget = ui_plot_widget
         self.netstat_plot_plot_item = self.netstat_plot_plot_widget.plotItem
 
+        self.netstat_plot_plot_widget.setBackground("k")
+
         """ Set axis labels, and label & axis colors. """
         self.netstat_plot_plot_item.getAxis('left').setPen(pg.mkPen(color=(NETSTAT_PLOT_COLOR_RX_LATENCY_CURVE), width=2))
         self.netstat_plot_plot_item.getAxis('right').setPen(pg.mkPen(color=(NETSTAT_PLOT_COLOR_TX_LATENCY_CURVE), width=2))
