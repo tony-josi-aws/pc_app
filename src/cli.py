@@ -56,7 +56,6 @@ class UI_Cli(Cmd):
             print('2. list - List all firewall rules. Syntax: firewall list')
             print('3. remove - Remove a firewall rule. Syntax: firewall remove\n')
 
-
         if cmd == 'trace':
             print('\nThe following sub-commands are available:\n')
             print('1. start - Start capturing execution traces on the device. Syntax: trace start')
@@ -72,7 +71,8 @@ class UI_Cli(Cmd):
         if cmd == 'coredump':
             print('\nThe following sub-commands are available:\n')
             print('1. check - Check if a coredump exists on the device. Syntax: coredump check')
-            print('2. get - Get coredump from the device. Syntax: coredump get <output_file>\n')
+            print('2. remove - Remove a coredump from the device. Syntax: coredump remove')
+            print('3. get - Get coredump from the device. Syntax: coredump get <output_file>\n')
 
         if cmd == 'exit':
             print('\nExit from the CLI.')
