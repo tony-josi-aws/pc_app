@@ -10,16 +10,17 @@ from PyQt5.QtWidgets import QFileDialog, QWidget, QHeaderView
 from communication_utils.comm_agent import CommAgent
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 
-from ui import netstat_plot, task_table, pcap_handler, trace_handler, coredump_handler
+from ui import netstat_plot, task_table, pcap_handler, trace_handler, coredump_handler, dialog_box
 
 from utils.network_stats_deserializer import deserialize_network_stats
 from utils.kernel_stats_deserializer import deserialize_kernel_stats
 class PC_App_Handler(QObject):
     command_completed_signal = QtCore.pyqtSignal(object)
 
-    def __init__(self, main_window_h) -> None:
+    def __init__(self, main_window_obj) -> None:
         super(PC_App_Handler, self).__init__()
-        self.main_window = main_window_h
+        self.pyqt_main_window = main_window_obj
+        self.main_window = main_window_obj.mw_ui
         self.comm_interface = None
         self.comm_agent = None
 
@@ -205,7 +206,6 @@ class PC_App_Handler(QObject):
         self.main_window.pb_start_trace.setEnabled(True)
         self.main_window.pb_download_trace.setEnabled(True)
         self.main_window.pb_coredump_check.setEnabled(True)
-        self.main_window.pb_coredump_assert.setEnabled(True)
         self.main_window.pb_coredump_download.setEnabled(True)
         self.main_window.pb_coredump_clean.setEnabled(True)
 
@@ -234,11 +234,18 @@ class PC_App_Handler(QObject):
     def pb_coredump_check_callback(self):
         self.coredump_h.coredump_command_check()
     
-    def pb_coredump_assert_callback(self):
-        self.coredump_h.coredump_command_assert()
+    def pb_exception_assert_callback(self):
+        pass
+        
 
     def pb_coredump_download_callback(self):
         self.coredump_h.coredump_command_get()
+
+        # self.exception_h.exception_command_assert()
+        
+        # Sample usage of dialog box
+        # dialog_bx_obj = dialog_box.AppDialogBox(self.pyqt_main_window)
+        # dialog_bx_obj.show_dialog("Core Dump Assert", "Test")
 
     def pb_coredump_clean_callback(self):
         self.coredump_h.coredump_command_clean()

@@ -30,7 +30,7 @@ class PC_APP(QMainWindow):
         self.mw_ui.setupUi(self)
         self.setWindowIcon(QtGui.QIcon(':/icons/window_icon.jpg'))
 
-        self.app_handle = PC_App_Handler(self.mw_ui)
+        self.app_handle = PC_App_Handler(self)
 
 if __name__ == "__main__":
 
