@@ -156,8 +156,8 @@ class core_dump_parser:
         return self.dump_gdb_txt_format(output_path)
 
     def dump_gdb_txt_format( self, output_file_path ):
-        if output_file_path == None:
-            fileName = "GeneratedGdb_" + str( self.timestamp ) + ".txt"
+        if output_file_path == None or output_file_path == "":
+            fileName = "gdb_parsed_output.txt"
         else:
             fileName = output_file_path + "/gdb_parsed_output.txt"
         fp = open( fileName , "w")

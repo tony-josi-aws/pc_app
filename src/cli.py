@@ -5,6 +5,7 @@ from communication_utils.comm_agent import CommAgent
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 from utils.network_stats_deserializer import deserialize_network_stats
 from utils.kernel_stats_deserializer import deserialize_kernel_stats
+from utils.core_dump_parser import core_dump_parser
 
 class UI_Cli(Cmd):
     intro = "Welcome to the X-Ray For FreeRTOS shell! Type ? to list commands."
@@ -178,7 +179,10 @@ class UI_Cli(Cmd):
             with open(dump_file_name, 'wb') as f:
                 f.write(response)
 
-            print(f"Generated coredump file: {dump_file_name}")
+            parser = core_dump_parser()
+            parsed_file_path = parser.parse_core_dump( dump_file_name, None )
+
+            print(f"Generated coredump file: {parsed_file_path}")
         else:
             print("Timed out while waiting for response!")
         # Signal the do_send function to return.

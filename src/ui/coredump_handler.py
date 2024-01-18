@@ -64,12 +64,12 @@ class Coredump_Handler(QtCore.QObject):
             except:
                 pass
 
-    def coredump_command_dump(self):
-        self.info_prefix_cmnd = "COREDUMP DUMP"
-        self.comm_agent.issue_command("coredump dump", self.coredump_command_dump_completed_callback)
-        print("coredump_command_dump")
+    def coredump_command_get(self):
+        self.info_prefix_cmnd = "COREDUMP GET"
+        self.comm_agent.issue_command("coredump get", self.coredump_command_get_completed_callback)
+        print("coredump_command_get")
 
-    def coredump_command_dump_completed_callback(self, response):
+    def coredump_command_get_completed_callback(self, response):
         if response is not None:
             file_pth = ""
             if self.file_path is not None:
@@ -85,14 +85,14 @@ class Coredump_Handler(QtCore.QObject):
 
         self.dump_data = "Generated dump file: {}".format(file_pth)
 
-        self.parse_dump(file_pth)
+        self.parse_dump(file_pth, self.main_win_handle.le_coredump_browse.text())
 
         self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Finish"))
         self.coredump_command_completed_signal.emit()
     
-    def parse_dump(self, file):
+    def parse_dump(self, src_file, dest_file):
         parser = core_dump_parser()
-        parsed_file_path = parser.parse_core_dump( file, self.main_win_handle.le_coredump_browse.text() )
+        parsed_file_path = parser.parse_core_dump( src_file, dest_file )
 
     def exceotion_set_download_file_path(self, path):
         self.file_path = path
@@ -100,7 +100,7 @@ class Coredump_Handler(QtCore.QObject):
     def coredump_command_clean(self):
         self.info_prefix_cmnd = "COREDUMP CLEAN"
         self.comm_agent.issue_command("coredump clean", self.coredump_command_clean_completed_callback)
-        print("coredump_command_dump")
+        print("coredump_command_clean")
 
     def coredump_command_clean_completed_callback(self, response):
         self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Finish"))

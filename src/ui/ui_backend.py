@@ -238,7 +238,7 @@ class PC_App_Handler(QObject):
         self.coredump_h.coredump_command_assert()
 
     def pb_coredump_download_callback(self):
-        self.coredump_h.coredump_command_dump()
+        self.coredump_h.coredump_command_get()
 
     def pb_coredump_clean_callback(self):
         self.coredump_h.coredump_command_clean()
