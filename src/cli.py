@@ -50,11 +50,11 @@ class UI_Cli(Cmd):
 
         if cmd == 'firewall':
             print('\nThe following sub-commands are available:\n')
-            print('1. add - Add a firewall rule. Syntax: firewall add <src ip> <src port> <det ip> <dst port> <protocol num> <permission>')
+            print('1. add - Add a firewall rule. Syntax: firewall add <src ip> <src port> <dst ip> <dst port> <protocol num> <permission>')
             print('   <protocol num> ICMP: 1, TCP: 6, UDP: 17')
             print('   <permission> Allow: 1, Block: 0')
             print('2. list - List all firewall rules. Syntax: firewall list')
-            print('3. delete - Delete a firewall rule. Syntax: firewall delete\n')
+            print('3. remove - Remove a firewall rule. Syntax: firewall remove\n')
 
 
         if cmd == 'trace':
@@ -138,7 +138,7 @@ class UI_Cli(Cmd):
         command_words = line.split()
         if command_words[0] == 'firewall':
             if len(command_words) >= 2:
-                line = f'send {command_words[0]}-{command_words[1]}{" ".join(command_words[2:])}'
+                line = f'send {command_words[0]}-{command_words[1]} {" ".join(command_words[2:])}'
         elif command_words[0] not in ['connect', 'disconnect', 'exit', 'help', '?']:
             line = f'send {line}'
         return line

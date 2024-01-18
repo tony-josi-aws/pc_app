@@ -19,7 +19,7 @@ class core_dump_parser:
         self.bss_length = 0
         self.bss_address = 0
         self.bssBankMemory = []
-        
+
         self.uxFileEndMagic = 0
 
         # Core register
@@ -143,15 +143,15 @@ class core_dump_parser:
             reader.seek( self.uxTotalLength - 4 )
             self.uxFileEndMagic = int.from_bytes(reader.read(4), byteorder='little')
 
-            print( hex( self.bss_address ) )
-            print( hex( self.bss_length ) )
-            print( hex( self.bss_offset ) )
+            # print( hex( self.bss_address ) )
+            # print( hex( self.bss_length ) )
+            # print( hex( self.bss_offset ) )
 
-            print( hex( self.data_address ) )
-            print( hex( self.data_length ) )
-            print( hex( self.data_offset ) )
+            # print( hex( self.data_address ) )
+            # print( hex( self.data_length ) )
+            # print( hex( self.data_offset ) )
 
-            print( hex( self.uxFileExistMagic ) )
+            # print( hex( self.uxFileExistMagic ) )
 
         return self.dump_gdb_txt_format(output_file)
 
@@ -164,7 +164,7 @@ class core_dump_parser:
         else:
             fileName = output_file
         fp = open( fileName , "w")
-        
+
         currentAddress = self.data_address
         iterateTime = 0
         isFirst = True
@@ -173,7 +173,7 @@ class core_dump_parser:
                 print("", file=fp)
             else:
                 isFirst = False
-            
+
             if (iterateTime % 4) == 0:
                 print( "0x{:08x}".format(currentAddress) + ":\t", end="", file=fp )
                 currentAddress += 16
@@ -191,7 +191,7 @@ class core_dump_parser:
                 print("", file=fp)
             else:
                 isFirst = False
-            
+
             if (iterateTime % 4) == 0:
                 print( "0x{:08x}".format(currentAddress) + ":\t", end="", file=fp )
                 currentAddress += 16
