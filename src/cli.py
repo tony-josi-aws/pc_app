@@ -63,6 +63,8 @@ class UI_Cli(Cmd):
             callback =self.netstat_command_complete_callback
         if cmnd.strip().lower() == "top":
             callback =self.top_command_complete_callback
+        if cmnd.strip().lower() == "exception dump":
+            callback =self.exception_dump_command_complete_callback
         return callback
 
     def default_command_complete_callback(self, response):
@@ -87,6 +89,21 @@ class UI_Cli(Cmd):
                 f.write(response)
 
             print(f"Generated PCAP dump file: {pcap_file_name}")
+        else:
+            print("Timed out while waiting for response!")
+        # Signal the do_send function to return.
+        self.response_received.set()
+
+    def exception_dump_command_complete_callback(self, response):
+        if response is not None:
+            dump_file_name = str(hex(random.getrandbits(64)))
+            dump_file_name = dump_file_name[2:]
+            dump_file_name += ".dump"
+
+            with open(dump_file_name, 'wb') as f:
+                f.write(response)
+
+            print(f"Generated Exception dump file: {dump_file_name}")
         else:
             print("Timed out while waiting for response!")
         # Signal the do_send function to return.

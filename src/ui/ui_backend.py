@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QFileDialog, QWidget, QHeaderView
 from communication_utils.comm_agent import CommAgent
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 
-from ui import netstat_plot, task_table, pcap_handler, trace_handler
+from ui import netstat_plot, task_table, pcap_handler, trace_handler, exception_handler
 
 from utils.network_stats_deserializer import deserialize_network_stats
 from utils.kernel_stats_deserializer import deserialize_kernel_stats
@@ -52,6 +52,10 @@ class PC_App_Handler(QObject):
         self.main_window.pb_stop_trace.clicked.connect(self.pb_stop_trace_callback)
         self.main_window.pb_start_trace.clicked.connect(self.pb_start_trace_callback)
         self.main_window.pb_download_trace.clicked.connect(self.pb_download_trace_callback)
+        self.main_window.pb_exception_check.clicked.connect(self.pb_exception_check_callback)
+        self.main_window.pb_exception_assert.clicked.connect(self.pb_exception_assert_callback)
+        self.main_window.pb_exception_download.clicked.connect(self.pb_exception_download_callback)
+        self.main_window.pb_exception_clean.clicked.connect(self.pb_exception_clean_callback)
 
         """ Make sure pressing enter key sends the command to device """
         self.main_window.cli_stdin.returnPressed.connect(self.pb_send_command_clicked)
@@ -81,6 +85,7 @@ class PC_App_Handler(QObject):
 
             self.pcap_h = pcap_handler.Pcap_Handler(self.comm_agent, self.main_window)
             self.trace_h = trace_handler.Trace_Handler(self.comm_agent, self.main_window)
+            self.exception_h = exception_handler.Exception_Handler(self.comm_agent, self.main_window)
 
     def pb_disconnect_clicked(self):
         if self.comm_agent is not None:
@@ -178,6 +183,10 @@ class PC_App_Handler(QObject):
         self.main_window.pb_stop_trace.setEnabled(False)
         self.main_window.pb_start_trace.setEnabled(False)
         self.main_window.pb_download_trace.setEnabled(False)
+        self.main_window.pb_exception_check.setEnabled(False)
+        self.main_window.pb_exception_assert.setEnabled(False)
+        self.main_window.pb_exception_download.setEnabled(False)
+        self.main_window.pb_exception_clean.setEnabled(False)
 
     def enable_buttons_after_connect(self):
         self.main_window.le_ip_addres.setEnabled(False)
@@ -196,6 +205,10 @@ class PC_App_Handler(QObject):
         self.main_window.pb_stop_trace.setEnabled(True)
         self.main_window.pb_start_trace.setEnabled(True)
         self.main_window.pb_download_trace.setEnabled(True)
+        self.main_window.pb_exception_check.setEnabled(True)
+        self.main_window.pb_exception_assert.setEnabled(True)
+        self.main_window.pb_exception_download.setEnabled(True)
+        self.main_window.pb_exception_clean.setEnabled(True)
 
     def pb_start_pcap_callback(self):
         self.pcap_h.send_pcap_start()
@@ -218,3 +231,15 @@ class PC_App_Handler(QObject):
         f_path = self.get_write_filepath_for_pcap("*.trace")
         self.trace_h.trace_set_download_file_path(f_path)
         self.trace_h.send_trace_download()
+        
+    def pb_exception_check_callback(self):
+        self.exception_h.exception_command_check()
+    
+    def pb_exception_assert_callback(self):
+        self.exception_h.exception_command_assert()
+
+    def pb_exception_download_callback(self):
+        self.exception_h.exception_command_dump()
+
+    def pb_exception_clean_callback(self):
+        self.exception_h.exception_command_clean()
