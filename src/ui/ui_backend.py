@@ -73,6 +73,9 @@ class PC_App_Handler(QObject):
         if self.comm_agent != None:
             self.enable_buttons_after_connect()
 
+            self.main_window.pb_coredump_clean.setEnabled(False)
+            self.main_window.pb_coredump_download.setEnabled(False)
+
             self.net_stat_cmnd_h = netstat_plot.NetStatStream(self.comm_agent, self.net_stat_plot_h)
             self.net_stat_plot_timer = QTimer()
             self.net_stat_plot_timer.timeout.connect(self.net_stat_cmnd_h.timer_callback)

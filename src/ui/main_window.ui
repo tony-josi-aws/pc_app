@@ -449,7 +449,7 @@
                 </font>
                </property>
                <property name="text">
-                <string/>
+                <string>Not running</string>
                </property>
               </widget>
              </item>
@@ -561,7 +561,7 @@
                 </font>
                </property>
                <property name="text">
-                <string/>
+                <string>Not running</string>
                </property>
               </widget>
              </item>
@@ -670,19 +670,12 @@
                 </font>
                </property>
                <property name="text">
-                <string>CORE DUMP STATUS:</string>
+                <string>COREDUMP STATUS:</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QLabel" name="l_e_status">
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label">
                <property name="text">
                 <string/>
                </property>
@@ -696,7 +689,7 @@
                 </font>
                </property>
                <property name="text">
-                <string/>
+                <string>Not checked</string>
                </property>
               </widget>
              </item>
@@ -721,31 +714,37 @@
                 </font>
                </property>
                <property name="text">
-                <string>Check</string>
+                <string>Check COREDUMP</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="pb_coredump_clean">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
                 </font>
                </property>
                <property name="text">
-                <string>Clean</string>
+                <string>Clean COREDUMP</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="pb_coredump_download">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
                 </font>
                </property>
                <property name="text">
-                <string>Download Core Dump</string>
+                <string>Download COREDUMP Data</string>
                </property>
               </widget>
              </item>

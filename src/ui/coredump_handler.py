@@ -58,9 +58,13 @@ class Coredump_Handler(QtCore.QObject):
 
                 if str_resp == "Coredump exists.":
                     self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "Coredump exists")
+                    self.main_win_handle.main_window.pb_coredump_clean.setEnabled(True)
+                    self.main_win_handle.main_window.pb_coredump_download.setEnabled(True)
                     #self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Dump Available"))
                 else:
                     self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "No coredump exist")
+                    self.main_win_handle.main_window.pb_coredump_clean.setEnabled(False)
+                    self.main_win_handle.main_window.pb_coredump_download.setEnabled(False)
                     #self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Dump Not Available"))
 
                 self.coredump_command_check_clear_completed_signal.emit()
