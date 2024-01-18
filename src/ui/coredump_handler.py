@@ -61,10 +61,10 @@ class Coredump_Handler(QtCore.QObject):
             if self.file_path is not None:
                 file_pth = self.file_path
             else:
-                dump_file_name = str(hex(random.getrandbits(64)))
-                dump_file_name = dump_file_name[2:]
-                dump_file_name += ".dump"
-                file_pth = dump_file_name
+                tmp_file_name = str(hex(random.getrandbits(64)))
+                tmp_file_name = tmp_file_name[2:]
+                tmp_file_name += ".tmp"
+                file_pth = tmp_file_name
 
         with open(file_pth, 'wb') as f:
             f.write(response)
