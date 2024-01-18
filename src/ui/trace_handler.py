@@ -11,6 +11,8 @@ from ui.dialog_box import AppDialogBox
 import pyqtgraph as pg
 from PyQt5 import QtCore, QtWidgets
 
+from utils.log2tdi import convert_raw_logs_to_tdi
+
 logger = logging.getLogger(__name__)
 
 class Trace_Handler(QtCore.QObject):
@@ -39,7 +41,7 @@ class Trace_Handler(QtCore.QObject):
         dialog_bx_obj.show_dialog(self.info_prefix_cmnd, self.trace_data)
 
         self.info_prefix_cmnd = ""
-        self.trace_data = ""        
+        self.trace_data = ""
 
     def send_trace_start(self):
         self.info_prefix_cmnd = "TRACE START"
@@ -72,12 +74,14 @@ class Trace_Handler(QtCore.QObject):
             else:
                 trace_file_name = str(hex(random.getrandbits(64)))
                 trace_file_name = trace_file_name[2:]
-                trace_file_name += ".trace"
+                trace_file_name += ".tdi"
                 file_pth = trace_file_name
 
-        with open(file_pth, 'wb') as f:
+        tmp_file_pth = file_pth + ".tmp"
+        with open(tmp_file_pth, 'wb') as f:
             f.write(response)
 
+        convert_raw_logs_to_tdi(tmp_file_pth, file_pth)
         self.trace_data = "Generated TRACE dump file: {}".format(file_pth)
         self.trace_command_completed_signal.emit()
 

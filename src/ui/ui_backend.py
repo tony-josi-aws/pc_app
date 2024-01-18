@@ -24,11 +24,11 @@ class PC_App_Handler(QObject):
         self.comm_interface = None
         self.comm_agent = None
 
-        header = self.main_window.tw_task_info.horizontalHeader()       
-        for i in range(self.main_window.tw_task_info.columnCount()):   
+        header = self.main_window.tw_task_info.horizontalHeader()
+        for i in range(self.main_window.tw_task_info.columnCount()):
             header.setSectionResizeMode(i, QHeaderView.Stretch)
-        header = self.main_window.tw_task_info.verticalHeader()    
-        for i in range(self.main_window.tw_task_info.rowCount()):   
+        header = self.main_window.tw_task_info.verticalHeader()
+        for i in range(self.main_window.tw_task_info.rowCount()):
             header.setSectionResizeMode(i, QHeaderView.Stretch)
 
 
@@ -224,11 +224,11 @@ class PC_App_Handler(QObject):
         self.trace_h.send_trace_start()
 
     def pb_download_trace_callback(self):
-        f_path = self.get_write_filepath_for_pcap("*.trace")
+        f_path = self.get_write_filepath_for_pcap("*.tdi")
         if f_path != None and f_path != '':
             self.trace_h.trace_set_download_file_path(f_path)
             self.trace_h.send_trace_download()
-        
+
     def pb_coredump_check_callback(self):
         self.coredump_h.coredump_command_check()
 

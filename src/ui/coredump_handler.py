@@ -56,17 +56,17 @@ class Coredump_Handler(QtCore.QObject):
             try:
                 str_resp = response.decode(encoding = 'ascii')
 
-                if str_resp == "TRUE":
-                    self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "Dump Available")
+                if str_resp == "Coredump exists.":
+                    self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "Coredump exists")
                     #self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Dump Available"))
                 else:
-                    self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "Dump Not Available")
+                    self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "No coredump exist")
                     #self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Dump Not Available"))
-                
+
                 self.coredump_command_check_clear_completed_signal.emit()
             except:
                 pass
-    
+
     def coredump_set_download_file_path(self, path):
         self.parsed_file_path = path
         self.file_path = self.parsed_file_path + ".tmp"
@@ -93,16 +93,16 @@ class Coredump_Handler(QtCore.QObject):
         # self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Generated dump file: {}".format(self.parsed_file_path)))
         self.core_dump_data = "Generated dump file: {}".format(self.parsed_file_path)
         self.coredump_command_completed_signal.emit()
-    
+
     def parse_dump(self, src_file, dest_file):
         parser = core_dump_parser()
         parsed_file_path = parser.parse_core_dump( src_file, dest_file )
 
     def coredump_command_clean(self):
-        self.info_prefix_cmnd = "COREDUMP CLEAN"
-        self.comm_agent.issue_command("coredump clean", self.coredump_command_clean_completed_callback)
+        self.info_prefix_cmnd = "COREDUMP REMOVE"
+        self.comm_agent.issue_command("coredump remove", self.coredump_command_remove_completed_callback)
 
-    def coredump_command_clean_completed_callback(self, response):
+    def coredump_command_remove_completed_callback(self, response):
         # self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Finish"))
-        self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "Finish")
+        self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "remove")
         self.coredump_command_check_clear_completed_signal.emit()
