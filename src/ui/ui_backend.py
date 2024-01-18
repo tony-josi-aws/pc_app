@@ -10,16 +10,17 @@ from PyQt5.QtWidgets import QFileDialog, QWidget, QHeaderView
 from communication_utils.comm_agent import CommAgent
 from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 
-from ui import netstat_plot, task_table, pcap_handler, trace_handler, coredump_handler
+from ui import netstat_plot, task_table, pcap_handler, trace_handler, coredump_handler, dialog_box
 
 from utils.network_stats_deserializer import deserialize_network_stats
 from utils.kernel_stats_deserializer import deserialize_kernel_stats
 class PC_App_Handler(QObject):
     command_completed_signal = QtCore.pyqtSignal(object)
 
-    def __init__(self, main_window_h) -> None:
+    def __init__(self, main_window_obj) -> None:
         super(PC_App_Handler, self).__init__()
-        self.main_window = main_window_h
+        self.pyqt_main_window = main_window_obj
+        self.main_window = main_window_obj.mw_ui
         self.comm_interface = None
         self.comm_agent = None
 
@@ -236,6 +237,12 @@ class PC_App_Handler(QObject):
         f_path = self.get_write_filepath_for_pcap("*.dump")
         self.coredump_h.coredump_set_download_file_path(f_path)
         self.coredump_h.coredump_command_get()
+
+        # self.exception_h.exception_command_assert()
+        
+        # Sample usage of dialog box
+        # dialog_bx_obj = dialog_box.AppDialogBox(self.pyqt_main_window)
+        # dialog_bx_obj.show_dialog("Core Dump Assert", "Test")
 
     def pb_coredump_clean_callback(self):
         self.coredump_h.coredump_command_clean()
