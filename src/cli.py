@@ -1,4 +1,3 @@
-import random
 import threading
 from cmd import Cmd
 from communication_utils.comm_agent import CommAgent
@@ -6,6 +5,7 @@ from communication_utils.udp_socket_interface import UDPSocket_CommInterface
 from utils.network_stats_deserializer import deserialize_network_stats
 from utils.kernel_stats_deserializer import deserialize_kernel_stats
 from utils.core_dump_parser import core_dump_parser
+from utils.log2tdi import convert_raw_logs_to_tdi
 
 class UI_Cli(Cmd):
     intro = "Welcome to the X-Ray For FreeRTOS shell! Type ? to list commands."
@@ -206,9 +206,11 @@ class UI_Cli(Cmd):
             if not output_file.endswith('.tdi'):
                 output_file += ".tdi"
 
-            with open(output_file, 'wb') as f:
+            temp_output_file = output_file + ".tmp"
+            with open(temp_output_file, 'wb') as f:
                 f.write(response)
 
+            convert_raw_logs_to_tdi(temp_output_file, output_file)
             print(f"Generated Trace dump file: {output_file}")
         else:
             print("Timed out while waiting for response!")
