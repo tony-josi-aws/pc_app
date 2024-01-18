@@ -20,6 +20,7 @@ class Coredump_Handler(QtCore.QObject):
         self.comm_agent = comm_agent
         self.main_win_handle = main_win_handle
         self.coredump_command_completed_signal.connect(self.coredump_command_completed_slot)
+        self.parsed_file_path = ""
 
     def coredump_command_completed_slot(self):
         self.main_win_handle.l_pcap_status.setText("{}: {}".format(self.info_prefix_cmnd, self.pcap_data))
@@ -28,7 +29,6 @@ class Coredump_Handler(QtCore.QObject):
     def coredump_command_check(self):
         self.info_prefix_cmnd = "COREDUMP CHECK"
         self.comm_agent.issue_command("coredump check", self.coredump_command_check_completed_callback)
-        print("coredump_command_check")
 
     # This callback runs in the comm agent thread's context and therefore, must
     # not manipulate the UI.
@@ -47,27 +47,13 @@ class Coredump_Handler(QtCore.QObject):
                 self.coredump_command_completed_signal.emit()
             except:
                 pass
-
-    def coredump_command_assert(self):
-        self.info_prefix_cmnd = "COREDUMP ASSERT"
-        self.comm_agent.issue_command("coredump assert", self.coredump_command_assert_completed_callback)
-        print("coredump_command_assert")
-
-    # This callback runs in the comm agent thread's context and therefore, must
-    # not manipulate the UI.
-    def coredump_command_assert_completed_callback(self, response):
-        if response is not None:
-            try:
-                str_resp = response.decode(encoding = 'ascii')
-                self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, str_resp))
-                self.coredump_command_completed_signal.emit()
-            except:
-                pass
+    
+    def coredump_set_download_file_path(self, path):
+        self.parsed_file_path = path
 
     def coredump_command_get(self):
         self.info_prefix_cmnd = "COREDUMP GET"
         self.comm_agent.issue_command("coredump get", self.coredump_command_get_completed_callback)
-        print("coredump_command_get")
 
     def coredump_command_get_completed_callback(self, response):
         if response is not None:
@@ -83,11 +69,8 @@ class Coredump_Handler(QtCore.QObject):
         with open(file_pth, 'wb') as f:
             f.write(response)
 
-        self.dump_data = "Generated dump file: {}".format(file_pth)
-
-        self.parse_dump(file_pth, self.main_win_handle.le_coredump_browse.text())
-
-        self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Finish"))
+        self.parse_dump(file_pth, self.parsed_file_path)
+        self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Generated dump file: {}".format(self.parsed_file_path)))
         self.coredump_command_completed_signal.emit()
     
     def parse_dump(self, src_file, dest_file):
@@ -100,7 +83,6 @@ class Coredump_Handler(QtCore.QObject):
     def coredump_command_clean(self):
         self.info_prefix_cmnd = "COREDUMP CLEAN"
         self.comm_agent.issue_command("coredump clean", self.coredump_command_clean_completed_callback)
-        print("coredump_command_clean")
 
     def coredump_command_clean_completed_callback(self, response):
         self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Finish"))

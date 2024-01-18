@@ -55,7 +55,6 @@ class PC_App_Handler(QObject):
         self.main_window.pb_coredump_check.clicked.connect(self.pb_coredump_check_callback)
         self.main_window.pb_coredump_download.clicked.connect(self.pb_coredump_download_callback)
         self.main_window.pb_coredump_clean.clicked.connect(self.pb_coredump_clean_callback)
-        self.main_window.pb_coredump_browse.clicked.connect(self.pb_coredump_browse_callback)
 
         """ Make sure pressing enter key sends the command to device """
         self.main_window.cli_stdin.returnPressed.connect(self.pb_send_command_clicked)
@@ -205,7 +204,6 @@ class PC_App_Handler(QObject):
         self.main_window.pb_start_trace.setEnabled(True)
         self.main_window.pb_download_trace.setEnabled(True)
         self.main_window.pb_coredump_check.setEnabled(True)
-        self.main_window.pb_coredump_assert.setEnabled(True)
         self.main_window.pb_coredump_download.setEnabled(True)
         self.main_window.pb_coredump_clean.setEnabled(True)
 
@@ -233,17 +231,11 @@ class PC_App_Handler(QObject):
         
     def pb_coredump_check_callback(self):
         self.coredump_h.coredump_command_check()
-    
-    def pb_coredump_assert_callback(self):
-        self.coredump_h.coredump_command_assert()
 
     def pb_coredump_download_callback(self):
+        f_path = self.get_write_filepath_for_pcap("*.dump")
+        self.coredump_h.coredump_set_download_file_path(f_path)
         self.coredump_h.coredump_command_get()
 
     def pb_coredump_clean_callback(self):
         self.coredump_h.coredump_command_clean()
-    
-    def pb_coredump_browse_callback(self):
-        dialog = QFileDialog()
-        file = dialog.getExistingDirectory(None, "Select Folder")
-        self.main_window.le_coredump_browse.setText(file)

@@ -155,11 +155,14 @@ class core_dump_parser:
 
         return self.dump_gdb_txt_format(output_path)
 
-    def dump_gdb_txt_format( self, output_file_path ):
-        if output_file_path == None or output_file_path == "":
-            fileName = "gdb_parsed_output.txt"
+    def dump_gdb_txt_format( self, output_file ):
+        if output_file == None or output_file == "":
+            coredump_parsed_file_name = str(hex(random.getrandbits(64)))
+            coredump_parsed_file_name = coredump_parsed_file_name[2:]
+            coredump_parsed_file_name += ".txt"
+            fileName = coredump_parsed_file_name
         else:
-            fileName = output_file_path + "/gdb_parsed_output.txt"
+            fileName = output_file
         fp = open( fileName , "w")
         
         currentAddress = self.data_address
