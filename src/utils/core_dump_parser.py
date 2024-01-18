@@ -1,8 +1,5 @@
 import sys
 import datetime
-import json
-import boto3
-import pprint
 
 class core_dump_parser:
     def __init( self ):
