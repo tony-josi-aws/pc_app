@@ -16,16 +16,21 @@ logger = logging.getLogger(__name__)
 class Trace_Handler(QtCore.QObject):
 
     trace_command_completed_signal = QtCore.pyqtSignal()
+    trace_command_start_stop_completed_signal = QtCore.pyqtSignal()
 
     def __init__(self, comm_agent, main_win_handle) -> None:
         super(Trace_Handler, self).__init__()
         self.comm_agent = comm_agent
         self.main_win_handle = main_win_handle
         self.trace_command_completed_signal.connect(self.trace_command_completed_slot)
+        self.trace_command_start_stop_completed_signal.connect(self.trace_command_start_stop_completed_slot)
         self.trace_data = ""
         self.file_path = None
         self.info_prefix_cmnd = ""
         logger.info("")
+
+    def trace_command_start_stop_completed_slot(self):
+        self.main_win_handle.main_window.l_trace.setText("{}: {}".format(self.info_prefix_cmnd, self.trace_data))
 
     def trace_command_completed_slot(self):
         #self.main_win_handle.l_trace.setText("{}: {}".format(self.info_prefix_cmnd, self.trace_data))
@@ -55,7 +60,7 @@ class Trace_Handler(QtCore.QObject):
             try:
                 str_resp = response.decode(encoding = 'ascii')
                 self.trace_data = str_resp
-                self.trace_command_completed_signal.emit()
+                self.trace_command_start_stop_completed_signal.emit()
             except:
                 pass
 

@@ -15,12 +15,14 @@ logger = logging.getLogger(__name__)
 class Pcap_Handler(QtCore.QObject):
 
     pcap_command_completed_signal = QtCore.pyqtSignal()
+    pcap_command_start_stop_completed_signal = QtCore.pyqtSignal()
 
     def __init__(self, comm_agent, main_win_handle) -> None:
         super(Pcap_Handler, self).__init__()
         self.comm_agent = comm_agent
         self.main_win_handle = main_win_handle
         self.pcap_command_completed_signal.connect(self.pcap_command_completed_slot)
+        self.pcap_command_start_stop_completed_signal.connect(self.pcap_command_start_stop_completed_slot)
         self.pcap_data = ""
         self.file_path = None
         self.info_prefix_cmnd = ""
@@ -33,6 +35,10 @@ class Pcap_Handler(QtCore.QObject):
 
         self.info_prefix_cmnd = ""
         self.pcap_data = ""        
+    
+    def pcap_command_start_stop_completed_slot(self):
+        self.main_win_handle.main_window.l_pcap_status.setText("{}: {}".format(self.info_prefix_cmnd, self.pcap_data))
+
 
     def send_pcap_start(self):
         self.info_prefix_cmnd = "PCAP START"
@@ -53,7 +59,7 @@ class Pcap_Handler(QtCore.QObject):
             try:
                 str_resp = response.decode(encoding = 'ascii')
                 self.pcap_data = str_resp
-                self.pcap_command_completed_signal.emit()
+                self.pcap_command_start_stop_completed_signal.emit()
             except:
                 pass
 

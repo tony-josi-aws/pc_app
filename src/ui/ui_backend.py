@@ -157,9 +157,6 @@ class PC_App_Handler(QObject):
     def pb_clear_cli_clicked(self):
         self.main_window.cli_stdout.clear()
 
-    def pb_download_pcap_clicked(self):
-        file_path = self.get_write_filepath_for_pcap()
-
     def get_write_filepath_for_pcap(self, file_type):
         pcap_file_path_dialog = QtWidgets.QFileDialog()
         pcap_file_path = pcap_file_path_dialog.getSaveFileName(filter="All Files({});;Text Files({})".format(file_type, file_type))
@@ -216,8 +213,9 @@ class PC_App_Handler(QObject):
 
     def pb_download_pcap_callback(self):
         f_path = self.get_write_filepath_for_pcap("*.pcap")
-        self.pcap_h.pcap_set_download_file_path(f_path)
-        self.pcap_h.send_pcap_download()
+        if f_path != None and f_path != '':
+            self.pcap_h.pcap_set_download_file_path(f_path)
+            self.pcap_h.send_pcap_download()
 
     def pb_stop_trace_callback(self):
         self.trace_h.send_trace_stop()
@@ -227,16 +225,18 @@ class PC_App_Handler(QObject):
 
     def pb_download_trace_callback(self):
         f_path = self.get_write_filepath_for_pcap("*.trace")
-        self.trace_h.trace_set_download_file_path(f_path)
-        self.trace_h.send_trace_download()
+        if f_path != None and f_path != '':
+            self.trace_h.trace_set_download_file_path(f_path)
+            self.trace_h.send_trace_download()
         
     def pb_coredump_check_callback(self):
         self.coredump_h.coredump_command_check()
 
     def pb_coredump_download_callback(self):
         f_path = self.get_write_filepath_for_pcap("*.dump")
-        self.coredump_h.coredump_set_download_file_path(f_path)
-        self.coredump_h.coredump_command_get()
+        if f_path != None and f_path != '':
+            self.coredump_h.coredump_set_download_file_path(f_path)
+            self.coredump_h.coredump_command_get()
 
 
     def pb_coredump_clean_callback(self):

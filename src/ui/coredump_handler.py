@@ -16,12 +16,14 @@ logger = logging.getLogger(__name__)
 class Coredump_Handler(QtCore.QObject):
 
     coredump_command_completed_signal = QtCore.pyqtSignal()
+    coredump_command_check_clear_completed_signal = QtCore.pyqtSignal()
 
     def __init__(self, comm_agent, main_win_handle) -> None:
         super(Coredump_Handler, self).__init__()
         self.comm_agent = comm_agent
         self.main_win_handle = main_win_handle
         self.coredump_command_completed_signal.connect(self.coredump_command_completed_slot)
+        self.coredump_command_check_clear_completed_signal.connect(self.coredump_command_check_clear_completed_slot)
         self.core_dump_data = ""
         self.parsed_file_path = ""
         self.info_prefix_cmnd = ""
@@ -32,6 +34,12 @@ class Coredump_Handler(QtCore.QObject):
         dialog_bx_obj = AppDialogBox(self.main_win_handle.pyqt_main_window)
         dialog_bx_obj.show_dialog(self.info_prefix_cmnd, self.core_dump_data)
 
+        self.info_prefix_cmnd = ""
+        self.core_dump_data = ""
+
+    def coredump_command_check_clear_completed_slot(self):
+
+        self.main_win_handle.main_window.l_coredump_status.setText("{}".format(self.core_dump_data))
         self.info_prefix_cmnd = ""
         self.core_dump_data = ""
 
@@ -55,7 +63,7 @@ class Coredump_Handler(QtCore.QObject):
                     self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "Dump Not Available")
                     #self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Dump Not Available"))
                 
-                self.coredump_command_completed_signal.emit()
+                self.coredump_command_check_clear_completed_signal.emit()
             except:
                 pass
     
@@ -97,4 +105,4 @@ class Coredump_Handler(QtCore.QObject):
     def coredump_command_clean_completed_callback(self, response):
         # self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Finish"))
         self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "Finish")
-        self.coredump_command_completed_signal.emit()
+        self.coredump_command_check_clear_completed_signal.emit()

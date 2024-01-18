@@ -1,6 +1,6 @@
 import sys
 import PyQt5
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QDialog, QVBoxLayout, QLabel, QWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QDialog, QVBoxLayout, QLabel, QWidget, QMessageBox
 
 class AppDialogBox():
 
@@ -9,21 +9,11 @@ class AppDialogBox():
 
     def show_dialog(self, title, message):
         # Create a QDialog instance
-        dialog = QDialog(self.mw)
-
+        dialog = QMessageBox(self.mw)
+     
+        dialog.setText(message)
         dialog.setWindowTitle(title)
-        dialog.setFixedWidth(400)
-        dialog.setFixedHeight(200)
-
-        # Create a label with a message
-        label = QLabel(message)
-
-        # Create a layout for the dialog
-        dialog_layout = QVBoxLayout()
-        dialog_layout.addWidget(label)
-
-        # Set the layout for the dialog
-        dialog.setLayout(dialog_layout)
+        dialog.setStyleSheet("QLabel{height: 100px; min-height: 100px; max-height: 100px;min-width: 500px; }")
 
         # Show the dialog as a modal dialog (blocks the main window)
         dialog.exec_()
