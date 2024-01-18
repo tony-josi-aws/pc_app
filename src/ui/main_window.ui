@@ -29,7 +29,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0,0,0,0,0,0,0,0">
+      <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0,0,0,0,0,0,0">
        <item>
         <widget class="QFrame" name="frame_21">
          <property name="autoFillBackground">
@@ -644,7 +644,10 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <property name="lineWidth">
+          <number>2</number>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
            <widget class="QFrame" name="frame_13">
             <property name="frameShape">
@@ -653,7 +656,7 @@
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
              <item>
               <widget class="QLabel" name="label_20">
                <property name="font">
@@ -664,12 +667,12 @@
                 </font>
                </property>
                <property name="text">
-                <string>EXCEPTION STATUS:</string>
+                <string>CORE DUMP STATUS:</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="l_exception_status">
+              <widget class="QLabel" name="l_e_status">
                <property name="text">
                 <string/>
                </property>
@@ -701,7 +704,7 @@
               </spacer>
              </item>
              <item>
-              <widget class="QPushButton" name="pb_exception_check">
+              <widget class="QPushButton" name="pb_coredump_check">
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
@@ -713,19 +716,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pb_exception_assert">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Assert</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pb_exception_clean">
+              <widget class="QPushButton" name="pb_coredump_clean">
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
@@ -736,15 +727,46 @@
                </property>
               </widget>
              </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_14">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_9">
              <item>
-              <widget class="QPushButton" name="pb_exception_download">
+              <widget class="QLineEdit" name="le_coredump_browse">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pb_coredump_browse">
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
                 </font>
                </property>
                <property name="text">
-                <string>Download EXCEPTION Data</string>
+                <string>Browse</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pb_coredump_download">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Download Core Dump</string>
                </property>
               </widget>
              </item>
@@ -752,13 +774,6 @@
            </widget>
           </item>
          </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="Line" name="line_5">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
         </widget>
        </item>
        <item>
@@ -776,6 +791,13 @@
           <number>1</number>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="Line" name="line_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QFrame" name="frame_6">
             <property name="frameShape">

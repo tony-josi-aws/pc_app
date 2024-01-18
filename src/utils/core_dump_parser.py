@@ -64,7 +64,7 @@ class core_dump_parser:
         self.ulRegMsp = 0
         self.ulRegPsp = 0
 
-    def parse_core_dump( self, FileName ):
+    def parse_core_dump( self, FileName, output_path ):
         self.timestamp = int(datetime.datetime.timestamp( datetime.datetime.now() ))
 
         with open( FileName, 'rb') as reader:
@@ -153,10 +153,13 @@ class core_dump_parser:
 
             print( hex( self.uxFileExistMagic ) )
 
-        return self.dump_gdb_txt_format()
+        return self.dump_gdb_txt_format(output_path)
 
-    def dump_gdb_txt_format( self ):
-        fileName = "GeneratedGdb_" + str( self.timestamp ) + ".txt"
+    def dump_gdb_txt_format( self, output_file_path ):
+        if output_file_path == None:
+            fileName = "GeneratedGdb_" + str( self.timestamp ) + ".txt"
+        else:
+            fileName = output_file_path + "/gdb_parsed_output.txt"
         fp = open( fileName , "w")
         
         currentAddress = self.data_address
