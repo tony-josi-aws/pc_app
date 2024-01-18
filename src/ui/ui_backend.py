@@ -84,7 +84,7 @@ class PC_App_Handler(QObject):
             self.task_info_table_timer.start(1000)
 
             self.pcap_h = pcap_handler.Pcap_Handler(self.comm_agent, self.main_window)
-            self.trace_h = trace_handler.Trace_Handler(self.comm_agent, self.main_window)
+            self.trace_h = trace_handler.Trace_Handler(self.comm_agent, self)
             self.coredump_h = coredump_handler.Coredump_Handler(self.comm_agent, self.main_window)
 
     def pb_disconnect_clicked(self):
@@ -238,11 +238,6 @@ class PC_App_Handler(QObject):
         self.coredump_h.coredump_set_download_file_path(f_path)
         self.coredump_h.coredump_command_get()
 
-        # self.exception_h.exception_command_assert()
-        
-        # Sample usage of dialog box
-        # dialog_bx_obj = dialog_box.AppDialogBox(self.pyqt_main_window)
-        # dialog_bx_obj.show_dialog("Core Dump Assert", "Test")
 
     def pb_coredump_clean_callback(self):
         self.coredump_h.coredump_command_clean()

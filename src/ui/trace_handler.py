@@ -5,6 +5,7 @@ import logging
 import threading
 from random import randrange
 from datetime import datetime
+from ui.dialog_box import AppDialogBox
 
 import pyqtgraph as pg
 from PyQt5 import QtCore, QtWidgets
@@ -26,7 +27,11 @@ class Trace_Handler(QtCore.QObject):
         logger.info("")
 
     def trace_command_completed_slot(self):
-        self.main_win_handle.l_trace.setText("{}: {}".format(self.info_prefix_cmnd, self.trace_data))
+        #self.main_win_handle.l_trace.setText("{}: {}".format(self.info_prefix_cmnd, self.trace_data))
+
+        dialog_bx_obj = AppDialogBox(self.main_win_handle.pyqt_main_window)
+        dialog_bx_obj.show_dialog(self.info_prefix_cmnd, self.trace_data)
+
         self.info_prefix_cmnd = ""
         self.trace_data = ""        
 
@@ -67,7 +72,7 @@ class Trace_Handler(QtCore.QObject):
         with open(file_pth, 'wb') as f:
             f.write(response)
 
-        self.trace_data = "Generated PCAP dump file: {}".format(file_pth)
+        self.trace_data = "Generated TRACE dump file: {}".format(file_pth)
         self.trace_command_completed_signal.emit()
 
     def trace_set_download_file_path(self, path):
