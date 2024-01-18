@@ -5,6 +5,7 @@ import logging
 import threading
 from random import randrange
 from datetime import datetime
+from ui.dialog_box import AppDialogBox
 
 import pyqtgraph as pg
 from PyQt5 import QtCore, QtWidgets
@@ -26,7 +27,10 @@ class Pcap_Handler(QtCore.QObject):
         logger.info("")
 
     def pcap_command_completed_slot(self):
-        self.main_win_handle.l_pcap_status.setText("{}: {}".format(self.info_prefix_cmnd, self.pcap_data))
+
+        dialog_bx_obj = AppDialogBox(self.main_win_handle.pyqt_main_window)
+        dialog_bx_obj.show_dialog(self.info_prefix_cmnd, self.pcap_data)
+
         self.info_prefix_cmnd = ""
         self.pcap_data = ""        
 

@@ -5,6 +5,7 @@ import logging
 import threading
 from random import randrange
 from datetime import datetime
+
 from ui.dialog_box import AppDialogBox
 
 import pyqtgraph as pg

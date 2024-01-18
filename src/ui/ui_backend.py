@@ -83,9 +83,9 @@ class PC_App_Handler(QObject):
             self.task_info_table_timer.timeout.connect(self.task_info_h.timer_callback)
             self.task_info_table_timer.start(1000)
 
-            self.pcap_h = pcap_handler.Pcap_Handler(self.comm_agent, self.main_window)
+            self.pcap_h = pcap_handler.Pcap_Handler(self.comm_agent, self)
             self.trace_h = trace_handler.Trace_Handler(self.comm_agent, self)
-            self.coredump_h = coredump_handler.Coredump_Handler(self.comm_agent, self.main_window)
+            self.coredump_h = coredump_handler.Coredump_Handler(self.comm_agent, self)
 
     def pb_disconnect_clicked(self):
         if self.comm_agent is not None:
