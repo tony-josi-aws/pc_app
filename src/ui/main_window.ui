@@ -437,7 +437,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>PCAP STATUS:</string>
+                <string>PCAP CAPTURE STATUS:</string>
                </property>
               </widget>
              </item>
@@ -449,7 +449,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Not running</string>
+                <string>NOT RUNNING</string>
                </property>
               </widget>
              </item>
@@ -549,7 +549,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>TRACE STATUS:</string>
+                <string>TRACE CAPTURE STATUS:</string>
                </property>
               </widget>
              </item>
@@ -561,7 +561,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Not running</string>
+                <string>NOT RUNNING</string>
                </property>
               </widget>
              </item>
@@ -670,14 +670,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>COREDUMP STATUS:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="l_e_status">
-               <property name="text">
-                <string/>
+                <string>LAST COREDUMP CHECK STATUS:</string>
                </property>
               </widget>
              </item>
@@ -689,7 +682,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Not checked</string>
+                <string>NOT CHECKED</string>
                </property>
               </widget>
              </item>
