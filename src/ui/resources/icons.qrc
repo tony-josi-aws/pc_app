@@ -2,7 +2,5 @@
 <RCC version="1.0">
     <qresource prefix="icons">
         <file alias="window_icon.jpg">window_icon.jpg</file>
-        <file alias="exit.png">exit.png</file>
-        <file alias="minimise.png">minimise.png</file>
     </qresource>
 </RCC>

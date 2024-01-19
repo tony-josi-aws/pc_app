@@ -56,8 +56,6 @@ class PC_App_Handler(QObject):
         self.main_window.pb_coredump_check.clicked.connect(self.pb_coredump_check_callback)
         self.main_window.pb_coredump_download.clicked.connect(self.pb_coredump_download_callback)
         self.main_window.pb_coredump_clean.clicked.connect(self.pb_coredump_clean_callback)
-        self.main_window.pb_close.clicked.connect(self.pb_close_callback)
-        self.main_window.pb_minimise.clicked.connect(self.pb_minimise_callback)
 
         """ Make sure pressing enter key sends the command to device """
         self.main_window.cli_stdin.returnPressed.connect(self.pb_send_command_clicked)
@@ -246,9 +244,3 @@ class PC_App_Handler(QObject):
 
     def pb_coredump_clean_callback(self):
         self.coredump_h.coredump_command_clean()
-
-    def pb_close_callback(self):
-        self.pyqt_main_window.close()
-
-    def pb_minimise_callback(self):
-        self.pyqt_main_window.showMinimized()
