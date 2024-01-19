@@ -32,8 +32,26 @@ class PC_APP(QMainWindow):
         self.mw_ui = Ui_MainWindow()
         self.mw_ui.setupUi(self)
         self.setWindowIcon(QtGui.QIcon(':/icons/window_icon.jpg'))
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
         self.app_handle = PC_App_Handler(self)
+
+    def mousePressEvent(self, event):
+        self.start = self.mapToGlobal(event.pos())
+        self.pressing = True
+
+    def mouseMoveEvent(self, event):
+        if self.pressing:
+            self.end = self.mapToGlobal(event.pos())
+            self.movement = self.end-self.start
+            self.setGeometry(self.mapToGlobal(self.movement).x(),
+                                self.mapToGlobal(self.movement).y(),
+                                self.width(),
+                                self.height())
+            self.start = self.end
+
+    def mouseReleaseEvent(self, QMouseEvent):
+        self.pressing = False
 
 if __name__ == "__main__":
     qdarktheme.enable_hi_dpi()
