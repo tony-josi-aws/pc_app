@@ -57,12 +57,12 @@ class Coredump_Handler(QtCore.QObject):
                 str_resp = response.decode(encoding = 'ascii')
 
                 if str_resp == "Coredump exists.":
-                    self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "Coredump exists")
+                    self.core_dump_data = "{}".format("COREDUMP EXISTS")
                     self.main_win_handle.main_window.pb_coredump_clean.setEnabled(True)
                     self.main_win_handle.main_window.pb_coredump_download.setEnabled(True)
                     #self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Dump Available"))
                 else:
-                    self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "No coredump exist")
+                    self.core_dump_data = "{}".format("NO COREDUMP EXISTS")
                     self.main_win_handle.main_window.pb_coredump_clean.setEnabled(False)
                     self.main_win_handle.main_window.pb_coredump_download.setEnabled(False)
                     #self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Dump Not Available"))
@@ -108,7 +108,7 @@ class Coredump_Handler(QtCore.QObject):
 
     def coredump_command_remove_completed_callback(self, response):
         # self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Finish"))
-        self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "remove")
+        self.core_dump_data = "{}".format("NO COREDUMP EXISTS")
         self.coredump_command_check_clear_completed_signal.emit()
         self.main_win_handle.main_window.pb_coredump_clean.setEnabled(False)
         self.main_win_handle.main_window.pb_coredump_download.setEnabled(False)

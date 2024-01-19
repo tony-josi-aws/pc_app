@@ -45,12 +45,12 @@ class Trace_Handler(QtCore.QObject):
 
     def send_trace_start(self):
         self.info_prefix_cmnd = "TRACE START"
-        self.trace_data = "Running"
+        self.trace_data = "RUNNING"
         self.comm_agent.issue_command("trace start", self.trace_start_stop_command_completed_callback)
 
     def send_trace_stop(self):
         self.info_prefix_cmnd = "TRACE STOP"
-        self.trace_data = "Not running"
+        self.trace_data = "NOT RUNNING"
         self.comm_agent.issue_command("trace stop", self.trace_start_stop_command_completed_callback)
 
     def send_trace_download(self):

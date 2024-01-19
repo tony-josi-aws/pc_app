@@ -34,20 +34,20 @@ class Pcap_Handler(QtCore.QObject):
         dialog_bx_obj.show_dialog(self.info_prefix_cmnd, self.pcap_data)
 
         self.info_prefix_cmnd = ""
-        self.pcap_data = ""        
-    
+        self.pcap_data = ""
+
     def pcap_command_start_stop_completed_slot(self):
         self.main_win_handle.main_window.l_pcap_status.setText("{}".format(self.pcap_data))
 
 
     def send_pcap_start(self):
         self.info_prefix_cmnd = "PCAP START"
-        self.pcap_data = "Running"
+        self.pcap_data = "RUNNING"
         self.comm_agent.issue_command("pcap start", self.pcap_start_stop_command_completed_callback)
 
     def send_pcap_stop(self):
         self.info_prefix_cmnd = "PCAP STOP"
-        self.pcap_data = "Not running"
+        self.pcap_data = "NOT RUNNING"
         self.comm_agent.issue_command("pcap stop", self.pcap_start_stop_command_completed_callback)
 
     def send_pcap_download(self):
