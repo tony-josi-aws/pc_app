@@ -8,8 +8,8 @@ from utils.core_dump_parser import core_dump_parser
 from utils.log2tdi import convert_raw_logs_to_tdi
 
 class UI_Cli(Cmd):
-    intro = "Welcome to the X-Ray For FreeRTOS shell! Type ? to list commands."
-    prompt = 'FreeRTOS X-Ray$ '
+    intro = "Welcome to the FreeRTOS Inspector shell! Type ? to list commands."
+    prompt = 'FreeRTOS Inspector$ '
 
     def __init__(self) -> None:
         super(UI_Cli, self).__init__()
@@ -93,7 +93,7 @@ class UI_Cli(Cmd):
         else:
             self.do_disconnect("")
             self.do_connect(target_ip, target_port)
-        UI_Cli.prompt = f'FreeRTOS X-Ray@{target_ip}:{target_port}$ '
+        UI_Cli.prompt = f'FreeRTOS Inspector@{target_ip}:{target_port}$ '
 
     def do_disconnect(self, cmnd):
         'Disconnect from the device. Syntax: disconnect'
@@ -102,7 +102,7 @@ class UI_Cli(Cmd):
             self.comm_interface.close_interface()
             self.comm_interface = None
             self.comm_agent = None
-        UI_Cli.prompt = 'FreeRTOS X-Ray$ '
+        UI_Cli.prompt = 'FreeRTOS Inspector$ '
 
     def do_exit(self, inp):
         'Exit this CLI. Syntax: exit'
