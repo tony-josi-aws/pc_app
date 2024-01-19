@@ -37,15 +37,17 @@ class Pcap_Handler(QtCore.QObject):
         self.pcap_data = ""        
     
     def pcap_command_start_stop_completed_slot(self):
-        self.main_win_handle.main_window.l_pcap_status.setText("{}: {}".format(self.info_prefix_cmnd, self.pcap_data))
+        self.main_win_handle.main_window.l_pcap_status.setText("{}".format(self.pcap_data))
 
 
     def send_pcap_start(self):
         self.info_prefix_cmnd = "PCAP START"
+        self.pcap_data = "Running"
         self.comm_agent.issue_command("pcap start", self.pcap_start_stop_command_completed_callback)
 
     def send_pcap_stop(self):
         self.info_prefix_cmnd = "PCAP STOP"
+        self.pcap_data = "Not running"
         self.comm_agent.issue_command("pcap stop", self.pcap_start_stop_command_completed_callback)
 
     def send_pcap_download(self):
@@ -58,7 +60,7 @@ class Pcap_Handler(QtCore.QObject):
         if response is not None:
             try:
                 str_resp = response.decode(encoding = 'ascii')
-                self.pcap_data = str_resp
+                #self.pcap_data = str_resp
                 self.pcap_command_start_stop_completed_signal.emit()
             except:
                 pass

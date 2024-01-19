@@ -110,3 +110,5 @@ class Coredump_Handler(QtCore.QObject):
         # self.main_win_handle.l_coredump_status.setText("{}: {}".format(self.info_prefix_cmnd, "Finish"))
         self.core_dump_data = "{}: {}".format(self.info_prefix_cmnd, "remove")
         self.coredump_command_check_clear_completed_signal.emit()
+        self.main_win_handle.main_window.pb_coredump_clean.setEnabled(False)
+        self.main_win_handle.main_window.pb_coredump_download.setEnabled(False)

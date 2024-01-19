@@ -32,7 +32,7 @@ class Trace_Handler(QtCore.QObject):
         logger.info("")
 
     def trace_command_start_stop_completed_slot(self):
-        self.main_win_handle.main_window.l_trace.setText("{}: {}".format(self.info_prefix_cmnd, self.trace_data))
+        self.main_win_handle.main_window.l_trace.setText("{}".format(self.trace_data))
 
     def trace_command_completed_slot(self):
         #self.main_win_handle.l_trace.setText("{}: {}".format(self.info_prefix_cmnd, self.trace_data))
@@ -45,10 +45,12 @@ class Trace_Handler(QtCore.QObject):
 
     def send_trace_start(self):
         self.info_prefix_cmnd = "TRACE START"
+        self.trace_data = "Running"
         self.comm_agent.issue_command("trace start", self.trace_start_stop_command_completed_callback)
 
     def send_trace_stop(self):
         self.info_prefix_cmnd = "TRACE STOP"
+        self.trace_data = "Not running"
         self.comm_agent.issue_command("trace stop", self.trace_start_stop_command_completed_callback)
 
     def send_trace_download(self):
@@ -61,7 +63,7 @@ class Trace_Handler(QtCore.QObject):
         if response is not None:
             try:
                 str_resp = response.decode(encoding = 'ascii')
-                self.trace_data = str_resp
+                #self.trace_data = str_resp
                 self.trace_command_start_stop_completed_signal.emit()
             except:
                 pass
