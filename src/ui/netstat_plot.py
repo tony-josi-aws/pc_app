@@ -55,7 +55,7 @@ class NetStatStream(QtCore.QObject):
 NETSTAT_PLOT_COLOR = '#0099ff'
 NETSTAT_PLOT_COLOR_RX_LATENCY_CURVE = '#0094d1'
 NETSTAT_PLOT_COLOR_TX_LATENCY_CURVE = '#8b1ec9'
-NETSTAT_PLOT_AXIS_LABEL_COLOR = '#000000'
+NETSTAT_PLOT_AXIS_LABEL_COLOR = '#ffffff'
 NETSTAT_PLOT_AXIS_LABEL_FONT_SIZE = "10pt"
 NETSTAT_PLOT_COLOR_LEFT_Y_AXIS_NAME =  "TX Latency (us)"
 NETSTAT_PLOT_COLOR_RIGHT_Y_AXIS_NAME =  "RX Latency (us)"
@@ -85,6 +85,9 @@ class NetStat_MainWindowPlotter:
         self.netstat_plot_plot_item.getAxis('left').setPen(pg.mkPen(color=(NETSTAT_PLOT_COLOR_RX_LATENCY_CURVE), width=2))
         self.netstat_plot_plot_item.getAxis('right').setPen(pg.mkPen(color=(NETSTAT_PLOT_COLOR_TX_LATENCY_CURVE), width=2))
         self.netstat_plot_plot_item.getAxis('bottom').setPen(pg.mkPen(color=(NETSTAT_PLOT_COLOR), width=2))
+        self.netstat_plot_plot_item.getAxis('left').setTextPen(NETSTAT_PLOT_COLOR_RX_LATENCY_CURVE)
+        self.netstat_plot_plot_item.getAxis('right').setTextPen(NETSTAT_PLOT_COLOR_TX_LATENCY_CURVE)
+        self.netstat_plot_plot_item.getAxis('bottom').setTextPen('w')
         self.netstat_plot_plot_item.setLabel('left', NETSTAT_PLOT_COLOR_LEFT_Y_AXIS_NAME, **NETSTAT_PLOT_LEFT_Y_AXIS_LABEL_STYLE)
         self.netstat_plot_plot_item.setLabel('bottom', NETSTAT_PLOT_COLOR_BOTTOM_X_AXIS_NAME, **NETSTAT_PLOT_X_AXIS_LABEL_STYLE)
         self.netstat_plot_plot_item.setLabel('right', NETSTAT_PLOT_COLOR_RIGHT_Y_AXIS_NAME, **NETSTAT_PLOT_RIGHT_Y_AXIS_LABEL_STYLE)

@@ -478,7 +478,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "X-Ray For FreeRTOS"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "FreeRTOS Inspector"))
         self.label_16.setText(_translate("MainWindow", "Device Info.:"))
         self.label_42.setText(_translate("MainWindow", "Device IP:"))
         self.label_47.setText(_translate("MainWindow", "Device Port:"))
