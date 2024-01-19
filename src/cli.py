@@ -136,11 +136,12 @@ class UI_Cli(Cmd):
 
     def precmd(self, line):
         command_words = line.split()
-        if command_words[0] == 'firewall':
-            if len(command_words) >= 2:
-                line = f'send {command_words[0]}-{command_words[1]} {" ".join(command_words[2:])}'
-        elif command_words[0] not in ['connect', 'disconnect', 'exit', 'help', '?']:
-            line = f'send {line}'
+        if len(command_words) > 0:
+            if command_words[0] == 'firewall':
+                if len(command_words) >= 2:
+                    line = f'send {command_words[0]}-{command_words[1]} {" ".join(command_words[2:])}'
+            elif command_words[0] not in ['connect', 'disconnect', 'exit', 'help', '?']:
+                line = f'send {line}'
         return line
 
     def select_callback_for_command(self, cmnd):
