@@ -86,13 +86,15 @@ class UI_Cli(Cmd):
             return
         target_ip = address[0]
         target_port = int(address[1])
-        if self.comm_interface == None:
-            self.comm_interface = UDPSocket_CommInterface(target_ip, target_port)
-            self.comm_agent = CommAgent(self.comm_interface)
-            self.comm_agent.start_command_processing()
-        else:
+
+        # Disconnect an already existing connection.
+        if self.comm_interface is not None:
             self.do_disconnect("")
-            self.do_connect(target_ip, target_port)
+
+        self.comm_interface = UDPSocket_CommInterface(target_ip, target_port)
+        self.comm_agent = CommAgent(self.comm_interface)
+        self.comm_agent.start_command_processing()
+
         UI_Cli.prompt = f'FreeRTOS Inspector@{target_ip}:{target_port}$ '
 
     def do_disconnect(self, cmnd):
